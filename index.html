@@ -1,0 +1,2488 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#185c37">
+  <title>Итоговая работа: сводный отчёт для руководителя</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="hello.gif" fetchpriority="high">
+  <link rel="preload" as="image" href="talk.gif" fetchpriority="high">
+  <link rel="stylesheet" href="artem-assistant.css">
+  <style>
+    :root{
+      --xl-green:#217346;--xl-green-dark:#185c37;--xl-green-light:#e8f5ee;--xl-green-glow:rgba(33,115,70,.28);
+      --surface:#fff;--surface-muted:#f6f8f7;--surface-ribbon:#fafbfa;
+      --border:#dde3df;--border-strong:#c5cec8;
+      --text:#1a2420;--text-muted:#5c6b64;--text-soft:#8a9690;
+      --shadow-sm:0 1px 2px rgba(24,40,32,.06);--shadow-md:0 8px 24px rgba(24,40,32,.08),0 2px 6px rgba(24,40,32,.04);
+      --shadow-lg:0 20px 50px rgba(24,40,32,.12),0 4px 14px rgba(33,115,70,.08);
+      --radius-sm:6px;--radius-md:10px;--radius-lg:14px;
+      --font:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+    }
+    *{box-sizing:border-box}
+    html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+    body{
+      margin:0;min-height:100vh;min-height:100dvh;font-family:var(--font);color:var(--text);
+      background:radial-gradient(ellipse 120% 80% at 50% -20%,rgba(33,115,70,.14),transparent 55%),
+        linear-gradient(165deg,#eef3f0 0%,#e4ebe6 45%,#dce5df 100%);
+      display:flex;flex-direction:column;align-items:center;
+      padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));
+    }
+    .app-header{max-width:1180px;width:100%;margin-bottom:10px;padding:0 2px}
+    .app-header h1{margin:0;font-size:1.05rem;font-weight:700;letter-spacing:-.02em;color:var(--xl-green-dark)}
+    .task-banner{
+      position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);
+      padding:14px 16px 14px 20px;margin:0 auto 12px;box-shadow:var(--shadow-sm);max-width:1180px;width:100%;
+      overflow:hidden;transition:border-color .2s,box-shadow .2s;
+    }
+    .task-banner::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--xl-green) 0%,var(--xl-green-dark) 100%);border-radius:var(--radius-md) 0 0 var(--radius-md)}
+    .task-banner.success{background:linear-gradient(135deg,#f3fbf6 0%,#e8f5ee 100%);border-color:#a8d5b8;box-shadow:0 4px 16px rgba(33,115,70,.1)}
+    .task-banner.success::before{background:linear-gradient(180deg,#43a047 0%,var(--xl-green) 100%)}
+    .task-banner p{margin:0;font-size:.94rem;line-height:1.55;color:var(--text)}
+    .task-banner b{color:var(--xl-green-dark);font-weight:600}
+    .excel-shell{
+      flex:1;display:flex;flex-direction:column;min-height:0;background:var(--surface);
+      border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;
+      max-width:1180px;width:100%;margin:0 auto;box-shadow:var(--shadow-lg);
+    }
+    .excel-shell::before{content:"";display:block;height:3px;background:linear-gradient(90deg,var(--xl-green-dark),var(--xl-green) 40%,#3d9970)}
+    .title-bar{
+      display:flex;align-items:center;gap:10px;padding:8px 14px;
+      background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:wrap;
+    }
+    .quick-access{display:flex;gap:4px}
+    .quick-access button{
+      display:flex;align-items:center;justify-content:center;
+      width:32px;height:30px;border:1px solid var(--border);background:var(--surface-muted);
+      border-radius:var(--radius-sm);cursor:pointer;color:var(--text-muted);padding:0;
+      transition:background .15s,border-color .15s,color .15s,transform .1s;
+    }
+    .quick-access button svg{display:block;flex-shrink:0}
+    .quick-access button:hover{background:var(--xl-green-light);border-color:#b8d4c4;color:var(--xl-green-dark)}
+    .quick-access button:active{transform:scale(.96)}
+    .split-btn{display:inline-flex;align-items:stretch;border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);background:var(--surface);overflow:hidden;vertical-align:top}
+    .split-btn-main{
+      display:inline-flex;align-items:center;gap:5px;border:none;background:transparent;padding:6px 10px;
+      font-size:11px;font-weight:500;line-height:1.25;color:var(--text);cursor:pointer;font-family:inherit;
+      text-align:left;transition:background .15s;
+    }
+    .split-btn-main:hover{background:var(--surface-muted)}
+    .split-btn-multiline{flex-direction:row;align-items:center;gap:5px;padding:3px 8px}
+    .split-btn-multiline .split-btn-text{line-height:1.15;font-size:10.5px;white-space:nowrap}
+    .split-btn-icon{display:flex;align-items:center;justify-content:center;color:var(--xl-green-dark);flex-shrink:0}
+    .split-btn-menu{
+      display:flex;align-items:center;justify-content:center;border:none;border-left:1px solid var(--border);
+      background:var(--surface-muted);padding:0 7px;min-width:22px;cursor:pointer;color:var(--text-muted);
+      font-size:11px;transition:background .15s,color .15s;
+    }
+    .split-btn-menu:hover{background:var(--xl-green-light);color:var(--xl-green-dark)}
+    .ribbon-menu{
+      position:fixed;z-index:1550;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);
+      box-shadow:var(--shadow-lg);padding:4px 0;min-width:240px;font-size:12px;
+    }
+    .ribbon-menu button{
+      display:block;width:100%;padding:8px 16px;border:none;background:transparent;text-align:left;
+      font-family:inherit;font-size:12px;cursor:pointer;color:var(--text);transition:background .12s;
+    }
+    .ribbon-menu button:hover{background:var(--xl-green-light);color:var(--xl-green-dark)}
+    .ribbon-menu hr{margin:4px 0;border:none;border-top:1px solid var(--border)}
+    .doc-title{
+      flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+      font-size:13px;font-weight:500;color:var(--text);min-width:150px;
+    }
+    .doc-title::before{
+      content:"";width:18px;height:18px;border-radius:4px;
+      background:linear-gradient(145deg,var(--xl-green) 0%,var(--xl-green-dark) 100%);
+      box-shadow:0 1px 3px rgba(33,115,70,.35);flex-shrink:0;
+    }
+    .ribbon-wrap{background:var(--surface-ribbon);border-bottom:1px solid var(--border)}
+    .ribbon-tabs{display:flex;flex-wrap:wrap;gap:2px;padding:6px 10px 0;border-bottom:1px solid var(--border)}
+    .ribbon-tabs button{
+      padding:8px 14px 10px;font-size:12px;font-weight:500;border:none;background:transparent;
+      cursor:pointer;color:var(--text-muted);font-family:inherit;border-radius:var(--radius-sm) var(--radius-sm) 0 0;
+      transition:color .15s,background .15s;position:relative;
+    }
+    .ribbon-tabs button:hover{color:var(--text);background:rgba(255,255,255,.7)}
+    .ribbon-tabs button.active{
+      background:var(--surface);color:var(--xl-green-dark);font-weight:600;
+      box-shadow:0 -1px 0 var(--border) inset;
+    }
+    .ribbon-tabs button.active::after{
+      content:"";position:absolute;left:12px;right:12px;bottom:0;height:2px;
+      background:var(--xl-green);border-radius:2px 2px 0 0;
+    }
+    .ribbon-panel{
+      display:flex;gap:4px;flex-wrap:wrap;align-items:flex-start;padding:8px 12px 10px;
+      background:var(--surface);min-height:48px;
+    }
+    .ribbon-group{
+      display:flex;flex-direction:column;align-items:center;gap:5px;
+      padding:0 14px 2px;border-right:1px solid var(--border);
+    }
+    .ribbon-group:last-child{border-right:none}
+    .ribbon-row{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+    .g-label{font-size:10px;font-weight:500;color:var(--text-soft);letter-spacing:.02em;text-transform:uppercase}
+    .rb{
+      padding:7px 11px;font-size:12px;font-weight:500;border:1px solid var(--border);
+      background:var(--surface);border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;
+      min-height:30px;color:var(--text);box-shadow:var(--shadow-sm);
+      transition:background .15s,border-color .15s,box-shadow .15s,transform .1s;
+    }
+    .rb:hover{background:var(--surface-muted);border-color:var(--border-strong);box-shadow:0 2px 6px rgba(24,40,32,.06)}
+    .rb:active{transform:translateY(1px)}
+    .rb.primary{background:linear-gradient(180deg,#f0faf4 0%,var(--xl-green-light) 100%);border-color:#9ccfb0;color:var(--xl-green-dark)}
+    .rb.primary:hover{background:linear-gradient(180deg,#fff 0%,#dff0e6 100%)}
+    .rb.active-toggle{background:var(--xl-green-light);border-color:var(--xl-green);color:var(--xl-green-dark);font-weight:600;box-shadow:0 0 0 2px rgba(33,115,70,.12)}
+    .fmt-select,.ui-select,.pivot-report-filter select,.modal select,.modal-body select{
+      padding:6px 28px 6px 10px;font-size:12px;font-weight:500;border:1px solid var(--border);border-radius:var(--radius-sm);
+      font-family:inherit;min-height:30px;background:var(--surface);
+      cursor:pointer;color:var(--text);box-shadow:var(--shadow-sm);
+      appearance:none;-webkit-appearance:none;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%235c6b64' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;background-position:right 10px center;
+    }
+    .fmt-select{
+      min-width:132px;max-width:168px;
+    }
+    .fmt-select:focus{outline:none;border-color:var(--xl-green);box-shadow:0 0 0 3px rgba(33,115,70,.12)}
+    .fmt-btn{min-width:34px;padding:7px 9px;font-weight:700;font-variant-numeric:tabular-nums}
+    .formula-bar{
+      display:flex;align-items:center;gap:8px;padding:6px 12px;
+      background:var(--surface-muted);border-bottom:1px solid var(--border);font-size:12px;
+    }
+    .name-box{
+      width:76px;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);
+      background:var(--surface);text-align:center;font-family:inherit;font-weight:600;font-size:11px;color:var(--xl-green-dark);
+    }
+    .fx-label{color:var(--text-soft);font-style:italic;font-weight:600;font-size:11px;width:22px;text-align:center}
+    .formula-input{
+      flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);
+      font-family:inherit;font-size:12px;background:var(--surface);color:var(--text);
+      transition:border-color .15s,box-shadow .15s;
+    }
+    .formula-input:focus{outline:none;border-color:var(--xl-green);box-shadow:0 0 0 3px rgba(33,115,70,.1)}
+    .grid-scroll{
+      flex:1;overflow:auto;-webkit-overflow-scrolling:touch;
+      background:linear-gradient(180deg,#fafcfb 0%,#f4f7f5 100%);min-height:260px;outline:none;
+    }
+    table.excel{width:100%;border-collapse:separate;border-spacing:0;font-size:12px;user-select:none;table-layout:fixed}
+    table.excel col.col-rowhead{width:28px}
+    table.excel th,table.excel td{
+      height:28px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+      padding:3px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    }
+    table.excel thead th{
+      background:linear-gradient(180deg,#268052 0%,var(--xl-green-dark) 100%);
+      color:#fff;font-weight:600;text-align:center;position:sticky;top:0;z-index:3;
+      box-shadow:0 1px 0 rgba(0,0,0,.08);
+    }
+    table.excel thead th.corner{width:28px;min-width:28px;max-width:28px;padding:0;background:var(--xl-green-dark)}
+    table.excel thead th.col-header{cursor:pointer;transition:filter .15s}
+    table.excel thead th.col-header:hover{filter:brightness(1.06)}
+    table.excel thead th.col-header.header-selected{background:var(--xl-green-dark);box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+    table.excel tbody th.row-header{
+      background:linear-gradient(90deg,#eef2ef 0%,#e6ebe8 100%);color:var(--text-muted);
+      font-weight:600;text-align:center;width:28px;min-width:28px;max-width:28px;
+      font-size:11px;padding:0 2px;cursor:pointer;position:sticky;left:0;z-index:2;
+    }
+    table.excel tbody th.row-header.header-selected{background:var(--xl-green-light);color:var(--xl-green-dark);box-shadow:inset 0 0 0 2px var(--xl-green)}
+    table.excel tbody td{position:relative;background:var(--surface);cursor:cell;text-align:right;transition:background .1s}
+    table.excel tbody tr:nth-child(even) td:not(.range-selected):not(.merged-cell){background:#fcfdfc}
+    table.excel tbody td.text-left{text-align:left}
+    table.excel tbody td.range-active{outline:2px solid var(--xl-green);outline-offset:-2px;z-index:1;box-shadow:inset 0 0 0 1px rgba(33,115,70,.15)}
+    table.excel tbody td.editing-cell{outline:2px solid var(--xl-green);outline-offset:-2px;z-index:2;padding:0;box-shadow:0 0 0 3px var(--xl-green-glow)}
+    table.excel tbody td.range-selected{background:rgba(33,115,70,.1)}
+    table.excel tbody td.merged-cell{background:#fffbeb;border-color:#f0e6c8}
+    table.excel tbody td.cell-error{color:#c62828!important;font-weight:600}
+    table.excel.smart-table tbody tr:nth-child(even) td:not([style*="background"]){background:#edf7f0}
+    table.excel.smart-table tbody tr:nth-child(odd) td:not([style*="background"]){background:var(--surface)}
+    table.excel.smart-table thead tr:first-child th,table.excel.smart-table tbody tr:first-child td{
+      background:linear-gradient(180deg,#268052 0%,var(--xl-green-dark) 100%)!important;color:#fff!important;font-weight:600;text-align:center;
+    }
+    .cell-inline-input{
+      position:absolute;inset:0;width:100%;height:100%;box-sizing:border-box;border:none;outline:none;
+      padding:3px 6px;margin:0;font:inherit;font-size:12px;line-height:20px;background:#fff;color:var(--text);
+      caret-color:var(--xl-green);z-index:2;text-align:right;border-radius:0;-webkit-appearance:none;appearance:none;
+    }
+    .cell-inline-input:focus{border:none;outline:none;box-shadow:none;background:#fff}
+    .text-left .cell-inline-input{text-align:left}
+    .filter-arrow{display:inline-block;margin-left:4px;cursor:pointer;font-size:9px;opacity:.75;vertical-align:middle;padding:2px 4px;border-radius:3px;transition:opacity .15s,background .15s}
+    .filter-arrow:hover,.filter-arrow.active{opacity:1;background:rgba(255,255,255,.22)}
+    .filter-dropdown{
+      position:fixed;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);
+      box-shadow:var(--shadow-lg);padding:10px 12px;z-index:1500;min-width:200px;max-height:320px;overflow-y:auto;font-size:12px;
+    }
+    .filter-dropdown label{display:flex;align-items:center;gap:8px;padding:6px 6px;cursor:pointer;border-radius:var(--radius-sm);transition:background .12s}
+    .filter-dropdown label:hover{background:var(--xl-green-light)}
+    .filter-dropdown hr{margin:6px 0;border:none;border-top:1px solid var(--border)}
+    .filter-dropdown .filter-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+    .filter-dropdown .filter-actions button{
+      padding:6px 16px;font-size:12px;cursor:pointer;border:1px solid var(--xl-green);
+      background:var(--xl-green-light);border-radius:var(--radius-sm);font-family:inherit;font-weight:600;color:var(--xl-green-dark);
+    }
+    .filter-dropdown .filter-actions button.cancel-btn{background:var(--surface-muted);border-color:var(--border);color:var(--text-muted);font-weight:500}
+    .sheet-bar{
+      display:flex;align-items:flex-end;background:linear-gradient(180deg,#eef2ef 0%,#e4e9e6 100%);
+      border-top:1px solid var(--border);padding:4px 8px 0;
+    }
+    .sheet-tab{
+      padding:7px 16px 8px;font-size:12px;font-weight:500;border:1px solid var(--border);border-bottom:none;
+      background:var(--surface-muted);cursor:pointer;font-family:inherit;
+      border-radius:var(--radius-sm) var(--radius-sm) 0 0;margin-right:4px;color:var(--text-muted);
+      transition:background .15s,color .15s;
+    }
+    .sheet-tab.active{background:var(--surface);font-weight:600;color:var(--xl-green-dark);padding-bottom:9px;margin-bottom:-1px;border-color:var(--border-strong)}
+    .toast{
+      position:fixed;top:50%;left:50%;z-index:1200;max-width:min(92vw,440px);padding:14px 20px;
+      border-radius:var(--radius-md);font-size:13px;line-height:1.5;color:var(--text);
+      background:var(--surface);border:1px solid var(--border);
+      box-shadow:var(--shadow-lg);transform:translate(-50%,-50%) scale(.96) translateY(8px);
+      opacity:0;visibility:hidden;pointer-events:none;transition:.25s cubic-bezier(.2,.8,.2,1);
+    }
+    .toast.visible{transform:translate(-50%,-50%) scale(1) translateY(0);opacity:1;visibility:visible}
+    .modal-overlay{
+      position:fixed;inset:0;background:rgba(20,32,26,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+      z-index:1100;display:none;align-items:center;justify-content:center;padding:16px;
+    }
+    .modal-overlay.visible{display:flex}
+    .modal{
+      background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);
+      box-shadow:var(--shadow-lg);max-width:440px;width:100%;font-size:13px;overflow:hidden;
+      animation:modalIn .22s cubic-bezier(.2,.8,.2,1);
+    }
+    @keyframes modalIn{from{opacity:0;transform:scale(.97) translateY(8px)}to{opacity:1;transform:none}}
+    .modal-title{
+      padding:12px 16px;background:linear-gradient(180deg,var(--surface) 0%,var(--surface-muted) 100%);
+      border-bottom:1px solid var(--border);font-weight:600;font-size:14px;color:var(--text);
+    }
+    .modal-body{padding:16px 18px}
+    .modal-body label{display:block;margin-bottom:5px;font-size:12px;font-weight:500;color:var(--text-muted)}
+    .modal-body input[type=text],.modal-body select{
+      width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);
+      font-family:inherit;font-size:12px;margin-bottom:12px;background:var(--surface);color:var(--text);
+    }
+    .modal-body input:focus,.modal-body select:focus{outline:none;border-color:var(--xl-green);box-shadow:0 0 0 3px rgba(33,115,70,.1)}
+    .modal-body .modal-row{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+    .modal-body .modal-row input{margin:0}
+    .modal-footer{
+      padding:12px 16px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;
+      background:var(--surface-muted);
+    }
+    .modal-footer button{
+      padding:8px 18px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;
+      border-radius:var(--radius-sm);border:1px solid var(--xl-green);
+      background:linear-gradient(180deg,#f4fbf7 0%,var(--xl-green-light) 100%);color:var(--xl-green-dark);
+      transition:transform .1s,box-shadow .15s;
+    }
+    .modal-footer button:hover{box-shadow:0 2px 8px rgba(33,115,70,.15)}
+    .modal-footer button.secondary{background:var(--surface);border-color:var(--border);color:var(--text-muted);font-weight:500}
+    .kbd-hint{font-size:11px;color:var(--text-soft);margin-top:8px;line-height:1.45}
+    .error-indicator{position:absolute;top:3px;left:3px;width:7px;height:7px;background:#ef5350;border-radius:50%;pointer-events:none;box-shadow:0 0 0 2px rgba(239,83,80,.25)}
+    .row-context-menu{
+      position:fixed;z-index:1600;background:var(--surface);border:1px solid var(--border);
+      border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);padding:4px 0;min-width:148px;font-size:12px;
+    }
+    .row-context-menu button{
+      display:block;width:100%;padding:8px 16px;border:none;background:transparent;text-align:left;
+      font-family:inherit;font-size:12px;cursor:pointer;color:var(--text);transition:background .12s;
+    }
+    .row-context-menu button:hover{background:var(--xl-green-light);color:var(--xl-green-dark)}
+    .excel-body{display:flex;flex:1;min-height:0;position:relative}
+    .excel-main{flex:1;display:flex;flex-direction:column;min-width:0;min-height:0}
+    .pivot-fields-panel{
+      width:248px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);
+      display:flex;flex-direction:column;font-size:11px;overflow:hidden;
+    }
+    .pivot-fields-panel[hidden]{display:none!important}
+    .pivot-fields-header{
+      padding:10px 12px;font-weight:600;font-size:12px;color:var(--text);
+      border-bottom:1px solid var(--border);background:var(--surface-muted);
+    }
+    .pivot-fields-list{
+      flex:1;overflow-y:auto;padding:8px 10px;border-bottom:1px solid var(--border);
+      max-height:180px;min-height:80px;
+    }
+    .pivot-field-item{
+      display:flex;align-items:center;gap:6px;padding:5px 8px;margin-bottom:3px;
+      border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);
+      cursor:grab;user-select:none;transition:background .12s,box-shadow .12s;
+    }
+    .pivot-field-item:hover{background:var(--xl-green-light);border-color:#b8d4c4}
+    .pivot-field-item.dragging{opacity:.45;cursor:grabbing}
+    .pivot-field-item.in-zone{opacity:.35}
+    .pivot-field-item .pf-check{width:14px;height:14px;flex-shrink:0;pointer-events:none}
+    .pivot-zones{padding:8px 10px 10px;display:flex;flex-direction:column;gap:6px;overflow-y:auto}
+    .pivot-zone{
+      border:1px dashed var(--border-strong);border-radius:var(--radius-sm);
+      min-height:38px;padding:4px 6px;background:var(--surface-muted);
+      transition:border-color .15s,background .15s;
+    }
+    .pivot-zone.drag-over{border-color:var(--xl-green);background:var(--xl-green-light);border-style:solid}
+    .pivot-zone-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text-soft);margin-bottom:3px}
+    .pivot-zone-chips{display:flex;flex-wrap:wrap;gap:3px;min-height:22px}
+    .pivot-chip{
+      display:inline-flex;align-items:center;gap:4px;padding:2px 7px;
+      background:var(--xl-green-light);border:1px solid #9ccfb0;border-radius:999px;
+      font-size:10px;font-weight:500;color:var(--xl-green-dark);cursor:default;
+    }
+    .pivot-chip button{
+      border:none;background:transparent;color:var(--text-muted);cursor:pointer;
+      font-size:12px;line-height:1;padding:0 2px;font-family:inherit;
+    }
+    .pivot-chip button:hover{color:#c62828}
+    .pivot-chip-label{line-height:1.25;white-space:normal}
+    .pivot-chip .pivot-chip-menu{color:var(--xl-green-dark);font-size:10px;padding:0 3px}
+    .pivot-chip .pivot-chip-menu:hover{color:var(--xl-green-dark)}
+    .pivot-stale{
+      padding:6px 10px;font-size:11px;line-height:1.4;background:#fff8e1;color:#8a6d3b;
+      border-bottom:1px solid #f0e6c8;
+    }
+    .pivot-stale[hidden]{display:none!important}
+    .pivot-chart-dock{
+      padding:10px 12px 6px;background:#fff;border-bottom:1px solid var(--border);
+    }
+    .pivot-chart-dock[hidden]{display:none!important}
+    .pivot-chart-title{font-size:12px;font-weight:600;color:var(--text-muted);margin:0 0 8px}
+    .pivot-chart-svg{display:block;width:100%;max-width:640px;height:auto}
+    .pivot-chart-note{font-size:10px;color:var(--text-soft);margin:6px 0 0}
+    .manager-brief{
+      margin:0 0 10px;padding:10px 12px;background:var(--surface-muted);border-radius:var(--radius-sm);
+      border:1px dashed var(--border-strong);font-size:.88rem;line-height:1.5;color:var(--text-muted);
+    }
+    .manager-brief b{color:var(--text)}
+    .vf-block-title{font-size:12px;font-weight:600;color:var(--text-muted);margin:2px 0 6px}
+    .vf-ops{display:flex;flex-direction:column;gap:2px;margin:0 0 12px}
+    .vf-op{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text);margin:0;padding:3px 0}
+    .vf-op.is-disabled{opacity:.4}
+    .row-context-menu hr{margin:4px 0;border:none;border-top:1px solid var(--border)}
+    .row-context-menu button:disabled{opacity:.4;cursor:default;color:var(--text-muted)}
+    .row-context-menu button:disabled:hover{background:transparent;color:var(--text-muted)}
+    .menu-item{position:relative}
+    .menu-item > button{display:flex;justify-content:space-between;gap:16px}
+    .submenu-fly{
+      display:none;position:absolute;left:calc(100% - 4px);top:-4px;min-width:220px;z-index:2;
+    }
+    .menu-item:hover > .submenu-fly,.menu-item:focus-within > .submenu-fly{display:block}
+    table.excel.pivot-table{table-layout:fixed;width:100%}
+    table.excel.pivot-table th,table.excel.pivot-table td{min-width:0}
+    table.excel.pivot-table thead th{white-space:normal;height:auto;line-height:1.25;padding:4px 6px}
+    table.excel.pivot-table tbody td.pivot-row-label{min-width:0;width:46%}
+    table.excel.pivot-table thead th.pivot-value-header{cursor:pointer}
+    .pivot-fields-panel{width:272px}
+    table.excel.pivot-table tbody td{text-align:right}
+    table.excel.pivot-table tbody td.pivot-row-label,table.excel.pivot-table tbody td.pivot-col-header{text-align:left;font-weight:500}
+    table.excel.pivot-table tbody td.pivot-grand-label{font-weight:700;background:#f3fbf6}
+    table.excel.pivot-table tbody td.pivot-total{font-weight:600;background:#f6f8f7}
+    table.excel.pivot-table tbody tr.pivot-grand-row td{font-weight:700;background:#edf7f0}
+    .pivot-report-filter{
+      display:flex;align-items:center;gap:6px;padding:6px 10px;font-size:11px;
+      background:var(--surface-muted);border-bottom:1px solid var(--border);flex-wrap:wrap;
+    }
+    .pivot-report-filter label{font-weight:500;color:var(--text-muted)}
+    .pivot-report-filter select{
+      padding:3px 26px 3px 8px;font-size:11px;min-height:26px;
+    }
+    table.excel.pivot-table tbody td.pivot-row-label{cursor:pointer}
+    table.excel.pivot-table tbody tr td.pivot-parent{font-weight:700;background:#f3fbf6}
+    table.excel.pivot-table tbody tr td.pivot-item-selected{box-shadow:inset 0 0 0 2px var(--xl-green)}
+    .pivot-twist{
+      width:16px;height:16px;margin-right:6px;padding:0;border:1px solid var(--border-strong);
+      border-radius:2px;background:#fff;color:var(--text);font:700 12px/14px var(--font);
+      cursor:pointer;vertical-align:middle;flex-shrink:0;
+    }
+    .pivot-twist:hover{border-color:var(--xl-green);color:var(--xl-green-dark);background:var(--xl-green-light)}
+    .pivot-twist-spacer{display:inline-block;width:16px;margin-right:6px;vertical-align:middle}
+    .modal-body .group-check{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:13px;font-weight:500;color:var(--text);cursor:pointer}
+    .modal-body .group-check input{margin:0}
+    .group-range{display:flex;gap:8px;margin-top:8px}
+    .group-range label{flex:1}
+    .group-range input{margin-bottom:0}
+    .target-panel{
+      max-width:1180px;width:100%;margin:0 auto 12px;background:#fffbeb;
+      border:1px solid #f0e6c8;border-radius:var(--radius-md);padding:12px 16px 14px;
+      box-shadow:var(--shadow-sm);
+    }
+    .target-panel[hidden]{display:none!important}
+    .target-panel-title{font-size:12px;font-weight:600;color:#8a6d3b;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+    .target-panel-note{font-size:12px;color:var(--text-muted);margin:0 0 10px;line-height:1.45}
+    .target-filter-bar{
+      display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;
+      padding:7px 10px;margin-bottom:10px;background:var(--surface);
+      border:1px solid var(--border);border-radius:var(--radius-sm);font-size:11px;
+    }
+    .target-filter-bar label{font-weight:500;color:var(--text-muted)}
+    .target-filter-value{
+      display:inline-flex;align-items:center;gap:4px;padding:3px 10px 3px 8px;
+      background:var(--surface-muted);border:1px solid var(--border);border-radius:var(--radius-sm);
+      color:var(--text);font-weight:500;
+    }
+    .target-filter-value::after{content:"▾";font-size:9px;color:var(--text-soft);margin-left:2px}
+    table.target-table{width:100%;border-collapse:collapse;font-size:11px;background:var(--surface)}
+    table.target-table th,table.target-table td{
+      border:1px solid var(--border);padding:5px 8px;text-align:right;
+    }
+    table.target-table th:first-child,table.target-table td:first-child{text-align:left;font-weight:500}
+    table.target-table thead th{background:var(--xl-green-light);color:var(--xl-green-dark);font-weight:600}
+    table.target-table tbody tr:last-child td{font-weight:700;background:#edf7f0}
+    .pivot-slicer-dock{
+      display:flex;flex-wrap:wrap;gap:10px;padding:8px 10px;
+      background:linear-gradient(180deg,#fafcfb 0%,#f4f7f5 100%);
+      border-bottom:1px solid var(--border);align-items:flex-start;
+    }
+    .pivot-slicer-dock[hidden]{display:none!important}
+    .pivot-slicer{
+      min-width:140px;max-width:360px;background:var(--surface);border:1px solid #c8c8c8;
+      border-radius:0;box-shadow:none;font-size:11px;overflow:hidden;
+    }
+    .pivot-slicer.slicer-cols-3{max-width:420px}
+    .pivot-slicer.slicer-cols-4{max-width:520px;min-width:300px}
+    .pivot-slicer.style-light .pivot-slicer-head{background:#f2f2f2;color:#333;border-bottom:1px solid #d9d9d9}
+    .pivot-slicer.style-light .pivot-slicer-btn{background:#fff;border-color:#ababab}
+    .pivot-slicer.style-light .pivot-slicer-btn.selected{background:#5b9bd5;border-color:#2e75b6;color:#fff}
+    .pivot-slicer.style-dark .pivot-slicer-head{background:#44546a;color:#fff;border-bottom:1px solid #3a4759}
+    .pivot-slicer.style-dark .pivot-slicer-btn{background:#5b6778;border-color:#44546a;color:#fff}
+    .pivot-slicer.style-dark .pivot-slicer-btn.selected{background:#ffc000;border-color:#c89600;color:#1a2420;font-weight:700}
+    .pivot-slicer.style-green .pivot-slicer-head{background:var(--xl-green-light);color:var(--xl-green-dark);border-bottom:1px solid #b8d4c4}
+    .pivot-slicer.style-green .pivot-slicer-btn.selected{background:var(--xl-green);border-color:var(--xl-green-dark);color:#fff}
+    .pivot-slicer-head{
+      display:flex;align-items:center;justify-content:space-between;gap:6px;
+      padding:5px 8px;background:var(--xl-green-light);border-bottom:1px solid #c5dfd0;
+      font-weight:600;color:var(--xl-green-dark);font-size:10px;
+    }
+    .pivot-slicer-clear{
+      border:none;background:transparent;cursor:pointer;padding:2px 4px;border-radius:3px;
+      color:var(--text-muted);font-size:14px;line-height:1;
+    }
+    .pivot-slicer-clear:hover{background:#fff;color:#c62828}
+    .pivot-slicer-body{display:grid;gap:4px;padding:6px 8px 8px;align-items:stretch}
+    .pivot-slicer-btn{
+      box-sizing:border-box;width:100%;min-width:0;margin:0;
+      padding:5px 4px;border:1px solid var(--border);border-radius:var(--radius-sm);
+      background:var(--surface-muted);cursor:pointer;font-family:inherit;font-size:10px;
+      color:var(--text);transition:background .12s,border-color .12s,box-shadow .12s;
+      white-space:normal;overflow-wrap:anywhere;word-break:break-word;
+      text-align:center;line-height:1.25;min-height:28px;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .pivot-slicer.slicer-cols-4 .pivot-slicer-btn{font-size:9.5px;line-height:1.2;padding:4px 3px;min-height:32px}
+    .pivot-slicer-btn:hover{border-color:#9ccfb0;background:var(--xl-green-light)}
+    .pivot-slicer-btn.selected{background:var(--xl-green);border-color:var(--xl-green-dark);color:#fff;font-weight:600}
+    .pivot-timeline{
+      flex:1;min-width:300px;max-width:520px;background:#fff;border:1px solid #c8c8c8;
+      border-radius:0;box-shadow:none;font-size:11px;color:#222;
+    }
+    .pivot-timeline-top{display:flex;align-items:flex-start;justify-content:space-between;padding:8px 10px 2px;gap:8px}
+    .pivot-timeline-title{font-size:12px;font-weight:700;line-height:1.2}
+    .pivot-timeline-clear{
+      border:none;background:transparent;cursor:pointer;padding:2px;font-size:15px;line-height:1;color:#666;
+    }
+    .pivot-timeline-clear:hover{color:#c62828}
+    .pivot-timeline-meta{
+      display:flex;align-items:center;justify-content:space-between;padding:0 10px 6px;gap:8px;font-size:11px;
+    }
+    .pivot-timeline-period{color:#2e75b6;font-weight:500}
+    .pivot-timeline-level-wrap{position:relative;display:flex;align-items:center;gap:2px}
+    .pivot-timeline-level{
+      border:none;background:transparent;font-size:10px;font-weight:600;letter-spacing:.04em;
+      color:#666;text-transform:uppercase;cursor:pointer;padding:2px 0;font-family:inherit;
+    }
+    .pivot-timeline-level-arrow{font-size:8px;color:#888}
+    .pivot-timeline-rule{height:2px;background:#2e75b6;margin:0 8px}
+    .pivot-timeline-scale{padding:4px 10px 0;text-align:center}
+    .pivot-timeline-year{font-size:11px;color:#888;margin-bottom:2px}
+    .pivot-timeline-labels{
+      display:flex;justify-content:space-between;gap:2px;padding:0 10px;font-size:10px;color:#666;text-transform:uppercase;
+    }
+    .pivot-timeline-labels span{flex:1;text-align:center;min-width:0}
+    .pivot-timeline-bar-wrap{padding:5px 10px 6px}
+    .pivot-timeline-bar{
+      display:flex;height:24px;border:1px solid #c8c8c8;background:#ececec;overflow:hidden;
+    }
+    .pivot-timeline-seg{
+      flex:1;min-width:0;border-right:1px solid rgba(255,255,255,.55);cursor:pointer;
+      background:linear-gradient(180deg,#c5e0f4 0%,#6fa8dc 45%,#5b9bd5 100%);
+      opacity:.28;transition:opacity .12s;
+    }
+    .pivot-timeline-seg.selected{opacity:1}
+    .pivot-timeline-seg:last-child{border-right:none}
+    .pivot-timeline-scroll{
+      display:flex;align-items:center;gap:0;border-top:1px solid #e0e0e0;margin:0 8px 6px;height:14px;
+    }
+    .pivot-timeline-scroll button{
+      width:16px;height:14px;border:1px solid #c8c8c8;background:#f3f3f3;padding:0;cursor:pointer;font-size:9px;line-height:1;color:#555;
+    }
+    .pivot-timeline-scroll-track{flex:1;height:8px;background:#e6e6e6;border:1px solid #c8c8c8;position:relative;margin:0 2px}
+    .pivot-timeline-scroll-thumb{
+      position:absolute;top:0;height:100%;background:#fff;border:1px solid #bbb;min-width:24px;
+    }
+    .slicer-style-swatch{
+      width:36px;height:28px;border:1px solid var(--border);border-radius:3px;cursor:pointer;padding:0;background:#f2f2f2;
+    }
+    .slicer-style-swatch.active{outline:2px solid var(--xl-green);outline-offset:1px}
+    .slicer-style-swatch.style-dark{background:linear-gradient(180deg,#5b6778 50%,#44546a 50%)}
+    .slicer-style-swatch.style-green{background:linear-gradient(180deg,var(--xl-green-light) 50%,var(--xl-green) 50%)}
+    .pivot-axis-filter-arrow{
+      display:inline-flex;margin-left:6px;cursor:pointer;font-size:9px;opacity:.85;
+      padding:2px 5px;border-radius:3px;vertical-align:middle;
+    }
+    .pivot-axis-filter-arrow:hover,.pivot-axis-filter-arrow.active{background:rgba(255,255,255,.25);opacity:1}
+    table.excel.pivot-table thead th .pivot-axis-filter-arrow{color:#fff}
+    .modal-body .vf-sub{margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
+    .modal-body .vf-sub label{font-size:12px;font-weight:600;color:var(--text-muted)}
+    @media (max-width:768px){
+      .app-header h1{font-size:.95rem}
+      .formula-input,.cell-inline-input,.name-box{font-size:16px!important}
+      table.excel th,table.excel td{height:32px}
+      .ribbon-tabs button{padding:6px 10px;font-size:11px}
+      .ribbon-panel{padding:6px 8px;min-height:0}
+      .rb{padding:6px 8px;font-size:11px}
+      .excel-shell{border-radius:var(--radius-md)}
+      .pivot-fields-panel{width:100%;max-height:42vh;border-left:none;border-top:1px solid var(--border)}
+      .excel-body{flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <h1>Итоговая работа: отчёт по комиссиям</h1>
+  </header>
+  <div class="task-banner" id="taskBanner"><p id="taskText"></p></div>
+  <div class="target-panel" id="targetPanel" hidden>
+    <div class="target-panel-title">Образец отчёта руководителя</div>
+    <p class="target-panel-note">Эталонные цифры после подготовки реестра (шаг 1). Сверьте со своей сводной — поля в образец не подсказываем.</p>
+    <div id="targetTableWrap"></div>
+  </div>
+  <div class="excel-shell">
+    <div class="title-bar">
+      <div class="quick-access">
+        <button type="button" id="btnUndo" title="Отменить (Ctrl+Z)" aria-label="Отменить">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.5 8a4.5 4.5 0 0 1 8-2.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3.5 5.5V8h2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="doc-title">Комиссии_регионы_2025.xlsx</div>
+    </div>
+    <div class="ribbon-wrap">
+      <div class="ribbon-tabs" id="ribbonTabs">
+        <button type="button" class="active" data-tab="home">Главная</button>
+        <button type="button" data-tab="insert">Вставка</button>
+        <button type="button" data-tab="pivot" id="ribbonTabPivot" hidden>Анализ сводной таблицы</button>
+        <button type="button" data-tab="slicertools" id="ribbonTabSlicerTools" hidden>Инструменты для срезов</button>
+        <button type="button" data-tab="pagelayout">Разметка страницы</button>
+        <button type="button" data-tab="formulas">Формулы</button>
+        <button type="button" data-tab="data">Данные</button>
+        <button type="button" data-tab="view">Вид</button>
+      </div>
+      <div class="ribbon-panel" id="ribbonPanel"></div>
+    </div>
+    <div class="excel-body">
+      <div class="excel-main">
+        <div class="formula-bar"><input class="name-box" id="nameBox" readonly value="A1"><span class="fx-label">fx</span><input class="formula-input" id="formulaInput" autocomplete="off" spellcheck="false"></div>
+        <div id="pivotStaleBar" class="pivot-stale" hidden>Исходные данные изменились. Вернитесь на лист сводной и нажмите «Обновить».</div>
+        <div id="pivotSlicerDock" class="pivot-slicer-dock" hidden></div>
+        <div id="pivotChartDock" class="pivot-chart-dock" hidden></div>
+        <div id="pivotFilterBar" class="pivot-report-filter" hidden></div>
+        <div class="grid-scroll" id="gridScroll" tabindex="0"><table class="excel" id="grid"></table></div>
+      </div>
+      <aside class="pivot-fields-panel" id="pivotFieldsPanel" hidden>
+        <div class="pivot-fields-header">Поля сводной таблицы</div>
+        <div class="pivot-fields-list" id="pivotFieldList"></div>
+        <div class="pivot-zones">
+          <div class="pivot-zone" data-zone="filters"><div class="pivot-zone-label">Фильтры</div><div class="pivot-zone-chips" id="zoneFilters"></div></div>
+          <div class="pivot-zone" data-zone="columns"><div class="pivot-zone-label">Столбцы</div><div class="pivot-zone-chips" id="zoneColumns"></div></div>
+          <div class="pivot-zone" data-zone="rows"><div class="pivot-zone-label">Строки</div><div class="pivot-zone-chips" id="zoneRows"></div></div>
+          <div class="pivot-zone" data-zone="values"><div class="pivot-zone-label">Значения</div><div class="pivot-zone-chips" id="zoneValues"></div></div>
+        </div>
+      </aside>
+    </div>
+    <div class="sheet-bar" id="sheetBar"></div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <div class="modal-overlay" id="modalGoTo"><div class="modal"><div class="modal-title">Перейти</div><div class="modal-body"><label>Ссылка:</label><input type="text" id="gotoRef" value="A1"><button type="button" class="rb" id="gotoSpecialBtn" style="margin-bottom:10px">Выделить…</button><div id="gotoSpecialPanel" hidden><label><input type="radio" name="gotoSpecial" value="blanks" checked> Пустые ячейки</label></div></div><div class="modal-footer"><button type="button" class="secondary" data-close="goto">Отмена</button><button type="button" id="gotoOk">OK</button></div></div></div>
+  <div class="modal-overlay" id="modalFind"><div class="modal"><div class="modal-title">Найти</div><div class="modal-body"><label>Найти:</label><input type="text" id="findText"></div><div class="modal-footer"><button type="button" class="secondary" data-close="find">Отмена</button><button type="button" id="findNext">Найти далее</button></div></div></div>
+  <div class="modal-overlay" id="modalReplace"><div class="modal"><div class="modal-title">Найти и заменить</div><div class="modal-body"><label>Найти:</label><input type="text" id="replaceFind"><label>Заменить на:</label><input type="text" id="replaceWith"><p class="kbd-hint">Также: кнопка «Найти и заменить» на вкладке «Главная». На Mac используйте именно <b>Ctrl+H</b>, не Cmd+H — иначе браузер свернётся.</p></div><div class="modal-footer"><button type="button" class="secondary" data-close="replace">Отмена</button><button type="button" id="replaceAll">Заменить все</button></div></div></div>
+  <div class="modal-overlay" id="modalDelete"><div class="modal"><div class="modal-title">Удалить</div><div class="modal-body"><label><input type="radio" name="deleteMode" value="shiftUp" checked> Сдвинуть ячейки вверх</label><br><label><input type="radio" name="deleteMode" value="row"> Удалить строку целиком</label><p class="kbd-hint">Сочетание <b>Ctrl + −</b> (минус на цифровой клавиатуре).</p></div><div class="modal-footer"><button type="button" class="secondary" data-close="delete">Отмена</button><button type="button" id="deleteOk">OK</button></div></div></div>
+  <div class="modal-overlay" id="modalFormat"><div class="modal"><div class="modal-title">Формат ячеек</div><div class="modal-body"><label>Числовой формат:</label><select id="formatSelect"><option value="general">Общий</option><option value="number">Числовой</option><option value="date">Дата</option><option value="text">Текстовый</option></select><p class="kbd-hint">Сочетание <b>Ctrl+1</b>.</p></div><div class="modal-footer"><button type="button" class="secondary" data-close="format">Отмена</button><button type="button" id="formatOk">OK</button></div></div></div>
+  <div class="modal-overlay" id="modalTable"><div class="modal"><div class="modal-title">Создание таблицы</div><div class="modal-body"><label>Диапазон:</label><input type="text" id="tableRange" readonly><label class="modal-row"><input type="checkbox" id="tableHeaders" checked> Таблица с заголовками</label><p class="kbd-hint">Сочетание <b>Ctrl+T</b> — превращает диапазон в «Умную таблицу».</p></div><div class="modal-footer"><button type="button" class="secondary" data-close="table">Отмена</button><button type="button" id="tableOk">OK</button></div></div></div>
+  <div class="modal-overlay" id="modalPivot"><div class="modal"><div class="modal-title">Создание сводной таблицы</div><div class="modal-body"><label>Выберите таблицу или диапазон:</label><input type="text" id="pivotRange" readonly><label>Выберите, куда поместить отчёт:</label><select id="pivotPlacement"><option value="new">Новый лист</option></select><p class="kbd-hint">Источник — реестр комиссионных начислений по договорам. Сводная не изменит исходные данные, пока вы сами не поправите лист и не нажмёте «Обновить».</p></div><div class="modal-footer"><button type="button" class="secondary" data-close="pivot">Отмена</button><button type="button" id="pivotOk">OK</button></div></div></div>
+  <div class="modal-overlay" id="modalGroup"><div class="modal" style="max-width:420px"><div class="modal-title">Группировка</div><div class="modal-body"><div id="groupDateBox"><p class="vf-block-title" style="margin-top:0">С шагом</p><label class="group-check"><input type="checkbox" id="gDays"> Дни</label><label class="group-check"><input type="checkbox" id="gMonths"> Месяцы</label><label class="group-check"><input type="checkbox" id="gQuarters"> Кварталы</label><label class="group-check"><input type="checkbox" id="gYears"> Годы</label><div class="group-range"><label>начиная с<input type="text" id="gDateFrom" readonly></label><label>по<input type="text" id="gDateTo" readonly></label></div><p class="kbd-hint">Отметьте нужные единицы и снимите лишние. Несколько галочек дают несколько уровней.</p></div><div id="groupNumBox" hidden><div class="group-range"><label>начиная с<input type="text" id="gStart" inputmode="decimal"></label><label>по<input type="text" id="gEnd" inputmode="decimal"></label></div><label for="gStep" style="margin-top:10px">с шагом</label><input type="text" id="gStep" inputmode="decimal"><p class="kbd-hint">Excel разложит числа на равные интервалы. Размер шага задаёте вы.</p></div></div><div class="modal-footer"><button type="button" class="secondary" data-close="group">Отмена</button><button type="button" id="groupOk">OK</button></div></div></div>
+  <div class="modal-overlay" id="modalExcelAlert"><div class="modal" style="max-width:420px"><div class="modal-title">Microsoft Excel</div><div class="modal-body"><p id="excelAlertText" style="margin:0;line-height:1.5"></p></div><div class="modal-footer"><button type="button" id="excelAlertOk">OK</button></div></div></div>
+  <div class="modal-overlay" id="modalInsertSlicer"><div class="modal" style="max-width:360px"><div class="modal-title">Вставить срезы</div><div class="modal-body"><p class="kbd-hint" style="margin-top:0">Отметьте поля, по которым нужны кнопки фильтра на листе.</p><div id="insertSlicerFields"></div></div><div class="modal-footer"><button type="button" class="secondary" data-close="insertSlicer">Отмена</button><button type="button" id="insertSlicerOk">OK</button></div></div></div>
+  <div class="modal-overlay" id="modalInsertTimeline"><div class="modal" style="max-width:360px"><div class="modal-title">Вставить временную шкалу</div><div class="modal-body"><label for="timelineFieldSelect">Поле даты:</label><select id="timelineFieldSelect"></select><p class="kbd-hint">Временная шкала фильтрует сводную по годам. Если поля нет в списке, проверьте формат дат на листе «Реестр».</p></div><div class="modal-footer"><button type="button" class="secondary" data-close="insertTimeline">Отмена</button><button type="button" id="insertTimelineOk">OK</button></div></div></div>
+  <div class="modal-overlay" id="modalAxisFilter"><div class="modal" style="max-width:380px"><div class="modal-title" id="axisFilterTitle">Фильтр</div><div class="modal-body"><div id="axisFilterLabels"></div><div class="vf-sub"><label>Фильтры по значению</label><div class="ribbon-row" style="margin-top:8px"><select id="axisValueOp"><option value="">— не использовать —</option><option value="gt">Больше…</option><option value="gte">Больше или равно…</option></select><input type="text" id="axisValueThreshold" inputmode="decimal" placeholder="Порог"></div><p class="kbd-hint">Показатель: сумма из области «Значения». Условие применяется к каждой строке отчёта.</p></div></div><div class="modal-footer"><button type="button" class="secondary" id="axisFilterClear">Очистить</button><button type="button" class="secondary" data-close="axisFilter">Отмена</button><button type="button" id="axisFilterOk">OK</button></div></div></div>
+  <div class="modal-overlay" id="modalSlicerSettings"><div class="modal" style="max-width:340px"><div class="modal-title">Параметры среза</div><div class="modal-body"><label for="slicerColumns">Число столбцов</label><select id="slicerColumns" class="ui-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select><label for="slicerStyle" style="margin-top:10px">Стиль среза</label><select id="slicerStyle" class="ui-select"><option value="light">Светлый 1</option><option value="dark">Тёмный 2</option><option value="green">Зелёный акцент</option></select></div><div class="modal-footer"><button type="button" class="secondary" data-close="slicerSettings">Отмена</button><button type="button" id="slicerSettingsOk">OK</button></div></div></div>
+  <div class="modal-overlay" id="modalConnections"><div class="modal" style="max-width:440px"><div class="modal-title">Подключения к книге</div><div class="modal-body"><p class="kbd-hint" style="margin-top:0">Связанный файл <b>Допродажи_декабрь.csv</b> подтягивает новые строки в реестр «Реестр».</p><label class="modal-row"><input type="checkbox" id="connRefreshOnOpen"> Обновлять при открытии файла</label><p class="kbd-hint">Как в Excel: «Данные» → «Изменить связи» → свойства подключения.</p></div><div class="modal-footer"><button type="button" class="secondary" data-close="connections">Отмена</button><button type="button" id="connectionsOk">OK</button></div></div></div>
+  <div class="modal-overlay" id="modalValueField"><div class="modal" style="max-width:480px"><div class="modal-title">Параметры поля значений</div><div class="modal-body"><label for="vfCustomName">Пользовательское имя</label><input type="text" id="vfCustomName" autocomplete="off"><div class="vf-block-title">Сводить значения по</div><div class="vf-ops" id="vfOps"></div><label for="vfShowAs">Дополнительные вычисления</label><select id="vfShowAs"><option value="none">Без вычислений</option><option value="pctGrand">% от общей суммы</option></select><label for="vfNumFmt">Числовой формат</label><select id="vfNumFmt"><option value="general">Общий</option><option value="number">Числовой</option><option value="number2">Числовой (2 знака)</option><option value="currency">Денежный</option><option value="percent">Процентный</option></select><p class="kbd-hint" id="vfHint" hidden></p></div><div class="modal-footer"><button type="button" class="secondary" data-close="valueField">Отмена</button><button type="button" id="vfOk">OK</button></div></div></div>
+
+<script src="artem-assistant.js"></script>
+<script>
+(function(){
+  const COLS=6, ROWS=28, DATA_ROW_START=1;
+  const EMPTY_ROW=4;
+  const SAVE_KEY='svd-final-exam-v1';
+  const PENDING_ROW=['Д-2601','15.12.2025','Москва','ВЗР',33000,'Оплачен'];
+  const GRAND_TOTAL_BASE=1519000;
+  const GRAND_TOTAL_AFTER_LINK=1522000;
+  let registryDataEnd=21;
+  let pendingRegistryApplied=false;
+  const workbookConnections={refreshOnOpen:false};
+  const ID_FIELD='Номер договора';
+  const CONTRACT_FIELD='Дата заключения';
+  const REGION_FIELD='Регион продаж';
+  const PRODUCT_FIELD='Продукт';
+  const COMMISSION_FIELD='Комиссия, руб.';
+  const STATUS_FIELD='Статус';
+  const EVENT_FIELD=CONTRACT_FIELD;
+  const PAYDATE_FIELD=CONTRACT_FIELD;
+  const BRANCH_FIELD=REGION_FIELD;
+  const PROPERTY_FIELD=PRODUCT_FIELD;
+  const AMOUNT_FIELD=COMMISSION_FIELD;
+  let slicerSeq=1,timelineSeq=1,editingSlicerId=null,axisFilterField=null;
+  const MONTHS_RU=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+  const MONTHS_SHORT_RU=['ЯНВ','ФЕВ','МАР','АПР','МАЙ','ИЮН','ИЮЛ','АВГ','СЕН','ОКТ','НОЯ','ДЕК'];
+  const TIMELINE_LEVELS=[['years','Годы'],['quarters','Кварталы'],['months','Месяцы']];
+  const SLICER_STYLES={light:'Светлый 1',dark:'Тёмный 2',green:'Зелёный акцент'};
+  const QUARTERS_RU=['I квартал','II квартал','III квартал','IV квартал'];
+  const AGG_LABEL={sum:'Сумма',count:'Количество',average:'Среднее',max:'Максимум',min:'Минимум'};
+  const AGG_OPTIONS=[['sum','Сумма'],['count','Количество'],['average','Среднее'],['max','Максимум'],['min','Минимум']];
+  let vfSeq=1, editingVfId=null;
+  const EXCEL_ERRORS=['#DIV/0!','#VALUE!','#REF!','#NAME?','#NUM!','#N/A'];
+  const colLabel=i=>String.fromCharCode(65+i);
+  const cellKey=(r,c)=>r+','+c;
+
+  const taskBanner=document.getElementById('taskBanner');
+  const taskText=document.getElementById('taskText');
+  const grid=document.getElementById('grid');
+  const gridScroll=document.getElementById('gridScroll');
+  const nameBox=document.getElementById('nameBox');
+  const formulaInput=document.getElementById('formulaInput');
+  const toast=document.getElementById('toast');
+  const ribbonTabs=document.getElementById('ribbonTabs');
+  const ribbonPanel=document.getElementById('ribbonPanel');
+  const sheetBar=document.getElementById('sheetBar');
+
+  let selR=0, selC=0, editR=null, editC=null, functionStep=0;
+  let cellEditorInput=null, toastTimer=null, filterDropdownEl=null;
+  let selRange=null, filterEnabled=false, isSmartTable=false, gotoSpecialMode=false;
+  let undoStack=[], mergedRegions=[];
+  let deletedRows=new Set(), hiddenRows=new Set();
+  let filterAppliedCol=null, filterAppliedValues=null;
+  let activeSheetIndex=0, lastTouchCell=null, lastTouchTime=0, contextMenuEl=null, ribbonMenuEl=null, syncingRibbon=false;
+  let restoredFromSave=false, saveDebounce=null;
+  let fieldListTaskArmed=false, dragFieldName=null, pivotSel=null, groupingTargetField=null, pivotItems=[];
+  const pivotFieldsPanel=document.getElementById('pivotFieldsPanel');
+  const targetPanel=document.getElementById('targetPanel');
+  const targetTableWrap=document.getElementById('targetTableWrap');
+  const pivotFieldList=document.getElementById('pivotFieldList');
+  const pivotFilterBar=document.getElementById('pivotFilterBar');
+  const pivotSlicerDock=document.getElementById('pivotSlicerDock');
+  const zoneEls={filters:document.getElementById('zoneFilters'),columns:document.getElementById('zoneColumns'),rows:document.getElementById('zoneRows'),values:document.getElementById('zoneValues')};
+
+  function emptyRows(){return Array.from({length:ROWS},()=>Array.from({length:COLS},()=>''));}
+  function buildInitialRows(){
+    const r=emptyRows();
+    r[0]=[ID_FIELD,CONTRACT_FIELD,REGION_FIELD,PRODUCT_FIELD,COMMISSION_FIELD,STATUS_FIELD];
+    r[1]=['Д-2401','09.01.2024','Новосибирск','ВЗР',42000,'Оплачен'];
+    r[2]=['Д-2402','17.01.2024','Екатеринбург','НС спорт',28000,'Оплачен'];
+    r[3]=['Д-2403','04.02.2024','Ростов-на-Дону','Защита дома','девяносто пять тыщ','Оплачен'];
+    r[4]=['','','','','',''];
+    r[5]=['Д-2404','21.03.2024','Воронеж','Автопомощь',31000,'Оплачен'];
+    r[6]=['Д-2405','11.04.2024','Новосибирск','Страхование жизни',120000,'Оплачен'];
+    r[7]=['Д-2406','28.05.2024','Екатеринбург','Ипотечное страхование',88000,'Оплачен'];
+    r[8]=['Д-2407','06.06.2024','Ростов-на-Дону','ВЗР',54000,'Оплачен'];
+    r[9]=['Д-2408','15.07.2024','Воронеж','Защита дома',67000,'Оплачен'];
+    r[10]=['Д-2409','02.09.2024','Новосибирск','взр',45000,'Оплачен'];
+    r[11]=['Д-2410','19.10.2024','Екатеринбург','Автопомощь',92000,'Оплачен'];
+    r[12]=['Д-2411','08.11.2024','Ростов-на-Дону','Страхование жизни',156000,'Оплачен'];
+    r[13]=['Д-2412','14.12.2024','Воронеж','Ипотечное страхование',73000,'Оплачен'];
+    r[14]=['Д-2501','12.01.2025','Новосибирск','ВЗР',61000,'Оплачен'];
+    r[15]=['Д-2502','23.02.2025','Екатеринбург','Защита дома',84000,'Оплачен'];
+    r[16]=['Д-2503','07.03.2025','Ростов-на-Дону','НС спорт',38000,'Оплачен'];
+    r[17]=['Д-2504','18.04.2025','Воронеж','Автопомощь',105000,'Оплачен'];
+    r[18]=['Д-2505','29.06.2025','Новосибирск','Страхование жизни',99000,'Оплачен'];
+    r[19]=['Д-2506','09.08.2025','Екатеринбург','Ипотечное страхование',52000,'Оплачен'];
+    r[20]=['Д-2507','21.09.2025','Ростов-на-Дону','ВЗР',77000,'Оплачен'];
+    r[21]=['Д-2508','03.11.2025','Воронеж','Защита дома',112000,'Оплачен'];
+    return r;
+  }
+  function createPivotSheet(name,sourceSheetIndex){
+    return{name,rows:emptyRows(),formats:{},styles:{},isPivot:true,pivot:{sourceSheetIndex,layout:{filters:[],columns:[],rows:[],values:[]},filterSelections:{},axisFilters:{},slicers:[],timelines:[],fieldListVisible:true,cache:null,stale:false,groupings:{},showExpandButtons:false,chart:null}};
+  }
+
+  const sheets=[{name:'Реестр',rows:buildInitialRows(),formats:{},styles:{}}];
+  mergedRegions.push({
+    r:7,c:2,rs:2,cs:1,value:'Екатеринбург',
+    backup:[{r:7,c:2,v:'Екатеринбург'},{r:8,c:2,v:'Ростов-на-Дону'}]
+  });
+  function sheet(){return sheets[activeSheetIndex];}
+  function isPivotSheet(sh){return sh&&sh.isPivot&&sh.pivot;}
+  function getActivePivot(){const sh=sheet();return isPivotSheet(sh)?sh.pivot:null;}
+  function getPivotSheet(){return sheets.find(s=>isPivotSheet(s))||null;}
+  function pivotLayout(){const p=getActivePivot();return p?p.layout:{filters:[],columns:[],rows:[],values:[]};}
+  function fieldInZone(zone,field){
+    const arr=pivotLayout()[zone];
+    if(zone==='values')return arr.some(v=>(v&&v.field?v.field:v)===field);
+    return arr.includes(field);
+  }
+  function getRegistryHeaders(srcIdx){return sheets[srcIdx].rows[0].map(h=>String(h).trim());}
+  function getRegistryRecords(srcIdx){
+    const sh=sheets[srcIdx],headers=getRegistryHeaders(srcIdx),records=[];
+    for(let r=DATA_ROW_START;r<=registryDataEnd;r++){
+      if(isRowDeleted(r))continue;
+      const row={};headers.forEach((h,c)=>{row[h]=getCellComputed(sh,r,c);});
+      if(headers.every(h=>row[h]===''||row[h]==null||String(row[h]).trim()===''))continue;
+      records.push(row);
+    }
+    return records;
+  }
+  function isNumericField(srcIdx,field){
+    const recs=getRegistryRecords(srcIdx);if(!recs.length)return false;
+    const v=recs[0][field];return typeof v==='number'&&isFinite(v);
+  }
+  function normName(s){return String(s||'').replace(/\s+/g,' ').trim();}
+  function valueIsText(v){
+    if(v===''||v==null)return false;
+    if(typeof v==='number'&&isFinite(v))return false;
+    return /[A-Za-zА-Яа-яЁё]/.test(String(v));
+  }
+  function fieldHasText(records,field){return records.some(r=>valueIsText(r[field]));}
+  function capturePivotCache(pivot){pivot.cache=getRegistryRecords(pivot.sourceSheetIndex).map(r=>Object.assign({},r));}
+  function recordsForPivot(pivot){return getRegistryRecords(pivot.sourceSheetIndex);}
+  function canSumCached(pivot,field){
+    const recs=recordsForPivot(pivot);
+    if(fieldHasText(recs,field))return false;
+    return recs.some(r=>typeof r[field]==='number'&&isFinite(r[field]));
+  }
+  function makeValueField(pivot,field){
+    return {id:'vf'+(vfSeq++),field:field,agg:canSumCached(pivot,field)?'sum':'count',showAs:'none',customName:'',numFmt:'general'};
+  }
+  function autoCaption(vf,all){
+    const base=(AGG_LABEL[vf.agg]||'Сумма')+' по полю '+vf.field;
+    const same=(all||[]).filter(v=>v.field===vf.field&&v.agg===vf.agg&&!normName(v.customName));
+    const idx=same.findIndex(v=>v.id===vf.id);
+    return idx>0?base+String(idx+1):base;
+  }
+  function valueCaption(vf,all){const custom=normName(vf.customName);return custom||autoCaption(vf,all||[]);}
+  function applyPivotFilters(records,layout,filterSelections){
+    let res=records.slice();
+    layout.filters.forEach(f=>{
+      const sel=filterSelections[f];
+      if(sel&&sel.size){
+        const all=uniqueSorted(records.map(r=>r[f]));
+        if(sel.size<all.length)res=res.filter(r=>sel.has(String(r[f]).trim()));
+      }
+    });
+    return res;
+  }
+  function slicerAllValues(pivot,field){
+    return uniqueSorted(recordsForPivot(pivot).map(r=>r[field]));
+  }
+  function applySlicerTimelineFilters(records,pivot){
+    let res=records.slice();
+    (pivot.slicers||[]).forEach(sl=>{
+      if(!sl.connected)return;
+      const all=slicerAllValues(pivot,sl.field);
+      const sel=sl.selected;
+      if(sel&&sel.size&&sel.size<all.length)res=res.filter(r=>sel.has(String(r[sl.field]).trim()));
+    });
+    (pivot.timelines||[]).forEach(tl=>{
+      if(!tl.connected)return;
+      const level=tl.level||'years';
+      if(level==='months'){
+        const all=timelineMonthKeys(pivot,tl.field);
+        const sel=tl.months?new Set(tl.months):null;
+        if(sel&&sel.size<all.length){
+          res=res.filter(r=>{
+            const d=parseDateValue(r[tl.field]);if(!d)return false;
+            const k=String(d.getFullYear())+'-'+String(d.getMonth()+1).padStart(2,'0');
+            return sel.has(k);
+          });
+        }
+      }else if(level==='quarters'){
+        const all=timelineQuarterKeys(pivot,tl.field);
+        const sel=tl.quarters?new Set(tl.quarters):null;
+        if(sel&&sel.size<all.length){
+          res=res.filter(r=>{
+            const d=parseDateValue(r[tl.field]);if(!d)return false;
+            const k=String(d.getFullYear())+'-Q'+String(Math.floor(d.getMonth()/3)+1);
+            return sel.has(k);
+          });
+        }
+      }else{
+        const years=tl.years;
+        if(years&&years.size){
+          const all=timelineYears(pivot,tl.field);
+          if(years.size<all.length){
+            res=res.filter(r=>{
+              const d=parseDateValue(r[tl.field]);if(!d)return false;
+              return years.has(String(d.getFullYear()));
+            });
+          }
+        }
+      }
+    });
+    return res;
+  }
+  function timelineYears(pivot,field){
+    const set=new Set();
+    recordsForPivot(pivot).forEach(r=>{const d=parseDateValue(r[field]);if(d)set.add(String(d.getFullYear()));});
+    return uniqueSorted([...set]);
+  }
+  function timelineMonthKeys(pivot,field){
+    const set=new Set();
+    recordsForPivot(pivot).forEach(r=>{
+      const d=parseDateValue(r[field]);if(!d)return;
+      set.add(String(d.getFullYear())+'-'+String(d.getMonth()+1).padStart(2,'0'));
+    });
+    return [...set].sort();
+  }
+  function timelineQuarterKeys(pivot,field){
+    const set=new Set();
+    recordsForPivot(pivot).forEach(r=>{
+      const d=parseDateValue(r[field]);if(!d)return;
+      set.add(String(d.getFullYear())+'-Q'+String(Math.floor(d.getMonth()/3)+1));
+    });
+    return [...set].sort();
+  }
+  function timelineKeysForLevel(pivot,tl){
+    if(tl.level==='months')return timelineMonthKeys(pivot,tl.field);
+    if(tl.level==='quarters')return timelineQuarterKeys(pivot,tl.field);
+    return timelineYears(pivot,tl.field);
+  }
+  function timelineSelectionSet(tl,allKeys){
+    if(tl.level==='months')return tl.months?new Set(tl.months):new Set(allKeys);
+    if(tl.level==='quarters')return tl.quarters?new Set(tl.quarters):new Set(allKeys);
+    return tl.years?new Set(tl.years):new Set(allKeys);
+  }
+  function timelineWriteSelection(tl,allKeys,sel){
+    const full=sel.size>=allKeys.length?null:new Set(sel);
+    if(tl.level==='months'){tl.months=full;tl.quarters=null;tl.years=null;}
+    else if(tl.level==='quarters'){tl.quarters=full;tl.months=null;tl.years=null;}
+    else{tl.years=full;tl.months=null;tl.quarters=null;}
+  }
+  function timelinePeriodLabel(tl,allKeys,sel){
+    if(!sel||sel.size>=allKeys.length)return 'Все периоды';
+    const arr=[...sel].sort();
+    if(tl.level==='months'){
+      const first=arr[0].split('-'),last=arr[arr.length-1].split('-');
+      return MONTHS_SHORT_RU[Number(first[1])-1]+' '+first[0]+' – '+MONTHS_SHORT_RU[Number(last[1])-1]+' '+last[0];
+    }
+    if(arr.length===1)return arr[0];
+    return arr[0]+' – '+arr[arr.length-1];
+  }
+  function timelineLevelLabel(level){
+    const p=TIMELINE_LEVELS.find(x=>x[0]===level);return p?p[1]:'Годы';
+  }
+  function matchAxisValueOp(total,op,threshold){
+    if(op==='gt')return total>threshold;
+    if(op==='gte')return total>=threshold;
+    return true;
+  }
+  function applyAxisFilters(records,pivot){
+    let res=records.slice();
+    const axis=pivot.axisFilters||{};
+    const valField=pivot.layout.values[0];
+    pivot.layout.rows.forEach(field=>{
+      const af=axis[field];if(!af)return;
+      if(af.type==='labels'&&af.selected&&af.selected.size){
+        const all=uniqueSorted(records.map(r=>r[field]));
+        if(af.selected.size<all.length)res=res.filter(r=>af.selected.has(String(r[field]).trim()));
+      }
+      if(af.type==='value'&&valField&&af.op){
+        const totals=new Map();
+        res.forEach(rec=>{
+          const k=String(rec[field]).trim();
+          const add=typeof rec[valField.field]==='number'&&isFinite(rec[valField.field])?rec[valField.field]:0;
+          totals.set(k,(totals.get(k)||0)+add);
+        });
+        const allowed=[...totals.entries()].filter(([,v])=>matchAxisValueOp(v,af.op,af.threshold)).map(([k])=>k);
+        res=res.filter(r=>allowed.includes(String(r[field]).trim()));
+      }
+    });
+    return res;
+  }
+  function pivotRecordsFiltered(pivot,opts){
+    opts=opts||{};
+    let records=recordsForPivot(pivot);
+    records=applyPivotFilters(records,pivot.layout,pivot.filterSelections);
+    if(!opts.ignoreSlicers)records=applySlicerTimelineFilters(records,pivot);
+    if(!opts.ignoreAxisFilters)records=applyAxisFilters(records,pivot);
+    return records;
+  }
+  function uniqueSorted(vals){return[...new Set(vals.map(v=>String(v).trim()))].sort((a,b)=>a.localeCompare(b,'ru'));}
+  function numericValues(records,field){
+    const nums=[];
+    records.forEach(rec=>{const v=rec[field];if(typeof v==='number'&&isFinite(v))nums.push(v);});
+    return nums;
+  }
+  function nonEmptyCount(records,field){
+    let n=0;
+    records.forEach(rec=>{const v=rec[field];if(v===''||v==null||String(v).trim()==='')return;n++;});
+    return n;
+  }
+  function aggregate(records,vf){
+    if(vf.agg==='count')return nonEmptyCount(records,vf.field);
+    const nums=numericValues(records,vf.field);
+    if(vf.agg==='average')return nums.length?nums.reduce((a,b)=>a+b,0)/nums.length:0;
+    if(vf.agg==='max')return nums.length?Math.max.apply(null,nums):0;
+    if(vf.agg==='min')return nums.length?Math.min.apply(null,nums):0;
+    return nums.reduce((a,b)=>a+b,0);
+  }
+  function orderedUnits(units){return ['years','quarters','months','days'].filter(u=>units.indexOf(u)>=0);}
+  function formatBinInt(n){return Math.round(n).toLocaleString('ru-RU');}
+  function buildBins(start,end,step){
+    const bins=[];let a=start,guard=0;
+    while(a<=end&&guard++<500){
+      const hi=a+step-1;
+      if(hi>=end){bins.push({lo:a,hi:end});break;}
+      bins.push({lo:a,hi:hi});a=hi+1;
+    }
+    return bins;
+  }
+  function numberGroupLabel(value,g){
+    if(typeof value!=='number'||!isFinite(value))return String(value==null?'':value).trim()||'(пусто)';
+    if(value<g.start)return '<'+formatBinInt(g.start);
+    if(value>g.end)return '>'+formatBinInt(g.end);
+    const bins=buildBins(g.start,g.end,g.step);
+    for(let i=0;i<bins.length;i++)if(value>=bins[i].lo&&value<=bins[i].hi)return formatBinInt(bins[i].lo)+'–'+formatBinInt(bins[i].hi);
+    return String(value);
+  }
+  function rowLevels(pivot){
+    const levels=[];
+    (pivot.layout.rows||[]).forEach(field=>{
+      const g=pivot.groupings&&pivot.groupings[field];
+      if(g&&g.type==='date')orderedUnits(g.units).forEach(unit=>levels.push({field,kind:'date',unit,group:g}));
+      else if(g&&g.type==='number')levels.push({field,kind:'number',unit:'bin',group:g});
+      else levels.push({field,kind:'raw',unit:null,group:null});
+    });
+    return levels;
+  }
+  function levelTitle(level){
+    if(level.kind==='date'&&level.unit==='years')return 'Годы';
+    if(level.kind==='date'&&level.unit==='quarters')return 'Кварталы';
+    if(level.kind==='date'&&level.unit==='months')return 'Месяцы';
+    if(level.kind==='date'&&level.unit==='days')return 'Дни';
+    return level.field;
+  }
+  function labelFor(rec,level){
+    if(level.kind==='raw'){const v=rec[level.field];return String(v==null?'':v).trim()||'(пусто)';}
+    if(level.kind==='number')return numberGroupLabel(rec[level.field],level.group);
+    const d=parseDateValue(rec[level.field]);
+    if(!d)return String(rec[level.field]==null?'':rec[level.field]).trim()||'(пусто)';
+    if(level.unit==='years')return String(d.getFullYear());
+    if(level.unit==='quarters')return QUARTERS_RU[Math.floor(d.getMonth()/3)];
+    if(level.unit==='months')return MONTHS_RU[d.getMonth()];
+    return formatDateRu(d);
+  }
+  function rankLabel(level,label){
+    if(level&&level.kind==='raw'){
+      const d=parseDateValue(label);
+      if(d)return dateToSerial(d);
+      const raw=String(label).replace(/\s/g,'').replace(',','.');
+      if(/^-?\d+(\.\d+)?$/.test(raw))return Number(raw);
+    }
+    if(level&&level.kind==='date'&&level.unit==='years')return Number(label)||0;
+    if(level&&level.kind==='date'&&level.unit==='quarters')return QUARTERS_RU.indexOf(label);
+    if(level&&level.kind==='date'&&level.unit==='months')return MONTHS_RU.indexOf(label);
+    if(level&&level.kind==='date'&&level.unit==='days'){const d=parseDateValue(label);return d?dateToSerial(d):0;}
+    if(level&&level.kind==='number'){
+      const s=String(label);
+      if(s.charAt(0)==='<')return -1e15;
+      if(s.charAt(0)==='>')return 1e15;
+      const m=s.replace(/\s/g,'').match(/-?\d+/);
+      return m?Number(m[0]):0;
+    }
+    return String(label);
+  }
+  function asGroupDate(v){if(typeof v==='number')return null;return parseDateValue(v);}
+  function detectGroupKind(records,field){
+    const vals=records.map(r=>r[field]).filter(v=>!(v===''||v==null||String(v).trim()===''));
+    if(!vals.length)return null;
+    if(vals.every(v=>typeof v==='number'&&isFinite(v)))return 'number';
+    if(vals.every(v=>!!asGroupDate(v)))return 'date';
+    if(vals.some(v=>!!asGroupDate(v)))return 'date';
+    if(vals.some(v=>typeof v==='number'&&isFinite(v)))return 'number';
+    return null;
+  }
+  function fieldGroupError(records,field,kind){
+    if(!kind)return 'bad';
+    for(let i=0;i<records.length;i++){
+      const v=records[i][field];
+      if(v===''||v==null||String(v).trim()==='')return 'blank';
+      if(kind==='date'&&!asGroupDate(v))return 'text';
+      if(kind==='number'&&!(typeof v==='number'&&isFinite(v)))return 'text';
+    }
+    return null;
+  }
+  function isCollapsedPivot(pivot,field,key){
+    const g=pivot.groupings&&pivot.groupings[field];
+    return !!(g&&g.collapsed&&g.collapsed[key]);
+  }
+  function buildReferenceRegistryRecords(){
+    const headers=getRegistryHeaders(0);
+    const clean=[
+      ['Д-2401','09.01.2024','Новосибирск','ВЗР',42000,'Оплачен'],
+      ['Д-2402','17.01.2024','Екатеринбург','НС спорт',28000,'Оплачен'],
+      ['Д-2403','04.02.2024','Ростов-на-Дону','Защита дома',95000,'Оплачен'],
+      ['Д-2404','21.03.2024','Воронеж','Автопомощь',31000,'Оплачен'],
+      ['Д-2405','11.04.2024','Новосибирск','Страхование жизни',120000,'Оплачен'],
+      ['Д-2406','28.05.2024','Екатеринбург','Ипотечное страхование',88000,'Оплачен'],
+      ['Д-2407','06.06.2024','Ростов-на-Дону','ВЗР',54000,'Оплачен'],
+      ['Д-2408','15.07.2024','Воронеж','Защита дома',67000,'Оплачен'],
+      ['Д-2409','02.09.2024','Новосибирск','ВЗР',45000,'Оплачен'],
+      ['Д-2410','19.10.2024','Екатеринбург','Автопомощь',92000,'Оплачен'],
+      ['Д-2411','08.11.2024','Ростов-на-Дону','Страхование жизни',156000,'Оплачен'],
+      ['Д-2412','14.12.2024','Воронеж','Ипотечное страхование',73000,'Оплачен'],
+      ['Д-2501','12.01.2025','Новосибирск','ВЗР',61000,'Оплачен'],
+      ['Д-2502','23.02.2025','Екатеринбург','Защита дома',84000,'Оплачен'],
+      ['Д-2503','07.03.2025','Ростов-на-Дону','НС спорт',38000,'Оплачен'],
+      ['Д-2504','18.04.2025','Воронеж','Автопомощь',105000,'Оплачен'],
+      ['Д-2505','29.06.2025','Новосибирск','Страхование жизни',99000,'Оплачен'],
+      ['Д-2506','09.08.2025','Екатеринбург','Ипотечное страхование',52000,'Оплачен'],
+      ['Д-2507','21.09.2025','Ростов-на-Дону','ВЗР',77000,'Оплачен'],
+      ['Д-2508','03.11.2025','Воронеж','Защита дома',112000,'Оплачен']
+    ];
+    return clean.map(row=>{
+      const rec={};
+      headers.forEach((h,i)=>{rec[h]=row[i];});
+      return rec;
+    });
+  }
+  function computePivotResult(pivot,recordsOverride){
+    if(!pivot.groupings)pivot.groupings={};
+    let records=recordsOverride?recordsOverride.slice():pivotRecordsFiltered(pivot);
+    if(recordsOverride){
+      records=applyPivotFilters(records,pivot.layout,pivot.filterSelections);
+      records=applySlicerTimelineFilters(records,pivot);
+      records=applyAxisFilters(records,pivot);
+    }
+    const levels=rowLevels(pivot),colFields=pivot.layout.columns.slice(),valFields=pivot.layout.values.slice();
+    const colKeys=[];
+    if(!colFields.length)colKeys.push(['']);
+    else{
+      const groups=new Map();
+      records.forEach(rec=>{
+        const parts=colFields.map(f=>String(rec[f]==null?'':rec[f]).trim());
+        const key=parts.join('\u0001');
+        if(!groups.has(key))groups.set(key,parts);
+      });
+      [...groups.values()].sort((a,b)=>a.join('\u0001').localeCompare(b.join('\u0001'),'ru')).forEach(v=>colKeys.push(v));
+    }
+    const root={children:new Map()};
+    records.forEach(rec=>{
+      let node=root;const path=[];
+      levels.forEach(level=>{
+        const label=labelFor(rec,level);
+        path.push(label);
+        if(!node.children.has(label))node.children.set(label,{label,key:path.join('\u0001'),level,field:level.field,children:new Map(),records:[]});
+        node=node.children.get(label);
+        node.records.push(rec);
+      });
+    });
+    function sortedKids(node){
+      return [...node.children.values()].sort((a,b)=>{
+        const ra=rankLabel(a.level,a.label),rb=rankLabel(b.level,b.label);
+        if(ra<rb)return -1;if(ra>rb)return 1;return 0;
+      });
+    }
+    const visible=[];
+    function walk(node){
+      sortedKids(node).forEach(ch=>{
+        const collapsed=isCollapsedPivot(pivot,ch.field,ch.key);
+        visible.push({label:ch.label,key:ch.key,field:ch.field,level:ch.level,records:ch.records,hasChildren:ch.children.size>0,collapsed,depth:ch.key.split('\u0001').length-1});
+        if(!collapsed)walk(ch);
+      });
+    }
+    walk(root);
+    function matchCol(rec,ck){
+      if(!colFields.length)return true;
+      return colFields.every((f,i)=>String(rec[f]==null?'':rec[f]).trim()===ck[i]);
+    }
+    const cells=visible.map(item=>colKeys.map(ck=>valFields.map(vf=>aggregate(item.records.filter(rec=>matchCol(rec,ck)),vf))));
+    const rowTotals=visible.map(item=>valFields.map(vf=>aggregate(item.records,vf)));
+    const colTotals=colKeys.map(ck=>valFields.map(vf=>aggregate(records.filter(rec=>matchCol(rec,ck)),vf)));
+    const grand=valFields.map(vf=>aggregate(records,vf));
+    return{levels,colFields,valFields,colKeys,visible,cells,rowTotals,colTotals,grand,records};
+  }
+  function shownNumber(raw,grand,vf){if(vf.showAs==='pctGrand')return grand?raw/grand*100:0;return raw;}
+  function formatShown(n,vf){
+    const asPct=vf.showAs==='pctGrand'||vf.numFmt==='percent';
+    if(asPct)return n.toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';
+    if(vf.numFmt==='currency')return n.toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2})+' ₽';
+    if(vf.numFmt==='number2')return n.toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2});
+    if(vf.agg==='count'||vf.numFmt==='number'||Math.abs(n-Math.round(n))<1e-6)return Math.round(n).toLocaleString('ru-RU');
+    return n.toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+  function formatVf(raw,grand,vf){return formatShown(shownNumber(raw,grand,vf),vf);}
+  function formatPivotNumber(n){return Number(n).toLocaleString('ru-RU',{maximumFractionDigits:0,useGrouping:true});}
+  function removeAxisField(p,field){['filters','columns','rows'].forEach(z=>{const i=p.layout[z].indexOf(field);if(i>=0)p.layout[z].splice(i,1);});}
+  function removeAllValuesOf(p,field){p.layout.values=p.layout.values.filter(v=>v.field!==field);}
+  function movePivotField(field,zone){
+    const p=getActivePivot();if(!p)return;
+    if(zone==='values'){
+      removeAxisField(p,field);
+      p.layout.values.push(makeValueField(p,field));
+      renderPivotUI();checkProgress();return;
+    }
+    removeAxisField(p,field);removeAllValuesOf(p,field);
+    if(zone&&zone!=='remove'){
+      p.layout[zone].push(field);
+      if(zone==='filters'&&!p.filterSelections[field]){
+        const vals=uniqueSorted(recordsForPivot(p).map(r=>r[field]));
+        p.filterSelections[field]=new Set(vals);
+      }
+    }
+    renderPivotUI();checkProgress();
+  }
+  function removeValueField(id){
+    const p=getActivePivot();if(!p)return;
+    p.layout.values=p.layout.values.filter(v=>v.id!==id);
+    renderPivotUI();checkProgress();
+  }
+  function setValueAgg(id,agg){
+    const p=getActivePivot();if(!p)return;
+    const vf=p.layout.values.find(v=>v.id===id);if(!vf)return;
+    if(agg!=='count'&&!canSumCached(p,vf.field)){showToast('В столбце есть текст, поэтому доступно только «Количество». Удалите текст на листе «Реестр» и нажмите «Обновить».');return;}
+    vf.agg=agg;renderPivotUI();checkProgress();
+  }
+  function setValueShowAs(id,showAs){
+    const p=getActivePivot();if(!p)return;
+    const vf=p.layout.values.find(v=>v.id===id);if(!vf)return;
+    vf.showAs=showAs;
+    if(showAs==='pctGrand'&&vf.numFmt==='general')vf.numFmt='percent';
+    renderPivotUI();checkProgress();
+  }
+  function openValueFieldSettings(id){
+    const p=getActivePivot();if(!p)return;
+    const vf=p.layout.values.find(v=>v.id===id);if(!vf)return;
+    editingVfId=id;
+    document.getElementById('vfCustomName').value=valueCaption(vf,p.layout.values);
+    const box=document.getElementById('vfOps');box.innerHTML='';
+    const blocked=!canSumCached(p,vf.field);
+    AGG_OPTIONS.forEach(pair=>{
+      const key=pair[0],label=pair[1];
+      const lab=document.createElement('label');lab.className='vf-op';
+      const inp=document.createElement('input');inp.type='radio';inp.name='vfAgg';inp.value=key;
+      if(vf.agg===key)inp.checked=true;
+      if(blocked&&key!=='count'){inp.disabled=true;lab.classList.add('is-disabled');}
+      lab.appendChild(inp);lab.appendChild(document.createTextNode(' '+label));box.appendChild(lab);
+    });
+    document.getElementById('vfShowAs').value=vf.showAs||'none';
+    document.getElementById('vfNumFmt').value=vf.numFmt||'general';
+    const hint=document.getElementById('vfHint');
+    hint.hidden=!blocked;
+    hint.textContent='В столбце есть текст, поэтому доступно только «Количество». Удалите текст на листе «Реестр» и обновите сводную — тогда «Сумма» и «Среднее» станут доступны.';
+    openModal('modalValueField');
+  }
+  function applyValueFieldSettings(){
+    const p=getActivePivot();if(!p||!editingVfId)return;
+    const vf=p.layout.values.find(v=>v.id===editingVfId);if(!vf)return;
+    const typed=normName(document.getElementById('vfCustomName').value);
+    const blankedBefore=p.layout.values.map(v=>v.id===vf.id?Object.assign({},v,{customName:''}):v);
+    const autoBefore=autoCaption(Object.assign({},vf,{customName:''}),blankedBefore);
+    const aggEl=document.querySelector('input[name="vfAgg"]:checked');
+    if(aggEl){
+      if(aggEl.value!=='count'&&!canSumCached(p,vf.field))showToast('Пока в столбце есть текст, доступно только «Количество».');
+      else vf.agg=aggEl.value;
+    }
+    vf.showAs=document.getElementById('vfShowAs').value;
+    vf.numFmt=document.getElementById('vfNumFmt').value;
+    if(vf.showAs==='pctGrand'&&(vf.numFmt==='general'||vf.numFmt==='number'||vf.numFmt==='currency'))vf.numFmt='percent';
+    const drafted=Object.assign({},vf,{customName:''});
+    const autoAfter=autoCaption(drafted,p.layout.values.map(v=>v.id===vf.id?drafted:v));
+    vf.customName=(!typed||typed===autoBefore||typed===autoAfter)?'':typed;
+    editingVfId=null;closeModal('modalValueField');renderPivotUI();checkProgress();
+  }
+  function refreshActivePivot(showMsg){
+    const p=getActivePivot();
+    if(!p){showToast('Обновить сводную можно на листе «Сводная1». Сочетание Ctrl+Alt+F5 обновляет её и с листа реестра.');return;}
+    capturePivotCache(p);p.stale=false;renderPivotUI();checkProgress();
+    if(showMsg!==false)showToast('Сводная таблица обновлена.');
+  }
+  function refreshAllPivots(){
+    const ps=getPivotSheet();
+    if(!ps){showToast('Сводной таблицы ещё нет.');return;}
+    capturePivotCache(ps.pivot);ps.pivot.stale=false;renderGrid();checkProgress();
+    showToast('Обновлено всё.');
+  }
+  function renderStaleBar(){
+    const bar=document.getElementById('pivotStaleBar');if(!bar)return;
+    const p=getActivePivot();bar.hidden=!(p&&p.stale);
+  }
+  function showValueMenu(clientX,clientY,vfId){
+    closeContextMenu();closeFilterDropdown();closeRibbonMenu();
+    const p=getActivePivot();if(!p)return;
+    const vf=p.layout.values.find(v=>v.id===vfId);if(!vf)return;
+    const blocked=!canSumCached(p,vf.field);
+    const menu=document.createElement('div');menu.className='row-context-menu';
+    function addBtn(label,action,disabled){
+      const b=document.createElement('button');b.type='button';b.textContent=label;
+      if(disabled)b.disabled=true;else b.addEventListener('click',()=>{closeContextMenu();action();});
+      menu.appendChild(b);
+    }
+    function addSub(label,children){
+      const wrap=document.createElement('div');wrap.className='menu-item';
+      const b=document.createElement('button');b.type='button';b.textContent=label+'  ▸';wrap.appendChild(b);
+      const sub=document.createElement('div');sub.className='row-context-menu submenu-fly';
+      children.forEach(ch=>{
+        const sb=document.createElement('button');sb.type='button';sb.textContent=ch.label;
+        if(ch.disabled)sb.disabled=true;else sb.addEventListener('click',()=>{closeContextMenu();ch.action();});
+        sub.appendChild(sb);
+      });
+      wrap.appendChild(sub);menu.appendChild(wrap);
+    }
+    addBtn('Параметры поля значений…',()=>openValueFieldSettings(vfId));
+    addSub('Итоги по',AGG_OPTIONS.map(pair=>{
+      const key=pair[0],label=pair[1];
+      return {label:(vf.agg===key?'✓ ':'')+label,disabled:blocked&&key!=='count',action:()=>setValueAgg(vfId,key)};
+    }));
+    addSub('Дополнительные вычисления',[
+      {label:(vf.showAs!=='pctGrand'?'✓ ':'')+'Без вычислений',action:()=>setValueShowAs(vfId,'none')},
+      {label:(vf.showAs==='pctGrand'?'✓ ':'')+'% от общей суммы',action:()=>setValueShowAs(vfId,'pctGrand')}
+    ]);
+    menu.appendChild(document.createElement('hr'));
+    addBtn('Обновить',()=>refreshActivePivot(true));
+    document.body.appendChild(menu);contextMenuEl=menu;
+    menu.style.left=Math.min(clientX,window.innerWidth-menu.offsetWidth-12)+'px';
+    menu.style.top=Math.min(clientY,window.innerHeight-menu.offsetHeight-12)+'px';
+    setTimeout(()=>document.addEventListener('mousedown',function outside(ev){
+      if(menu.contains(ev.target)){document.addEventListener('mousedown',outside,{once:true});return;}
+      closeContextMenu();
+    },{once:true}),0);
+  }
+  function showPivotRefreshMenu(e){
+    e.preventDefault();closeContextMenu();closeFilterDropdown();closeRibbonMenu();
+    const menu=document.createElement('div');menu.className='row-context-menu';
+    const b=document.createElement('button');b.type='button';b.textContent='Обновить';
+    b.addEventListener('click',()=>{closeContextMenu();refreshActivePivot(true);});
+    menu.appendChild(b);document.body.appendChild(menu);contextMenuEl=menu;
+    menu.style.left=Math.min(e.clientX,window.innerWidth-menu.offsetWidth-12)+'px';
+    menu.style.top=Math.min(e.clientY,window.innerHeight-menu.offsetHeight-12)+'px';
+    setTimeout(()=>document.addEventListener('mousedown',function outside(ev){if(menu.contains(ev.target))return;closeContextMenu();},{once:true}),0);
+  }
+  function renderPivotFieldsPanel(){
+    const p=getActivePivot();if(!p||!p.fieldListVisible){pivotFieldsPanel.hidden=true;return;}
+    pivotFieldsPanel.hidden=false;
+    const headers=getRegistryHeaders(p.sourceSheetIndex);
+    pivotFieldList.innerHTML='';
+    headers.forEach(name=>{
+      const used=['filters','columns','rows','values'].some(z=>fieldInZone(z,name));
+      const el=document.createElement('div');
+      el.className='pivot-field-item'+(used?' in-zone':'');
+      el.draggable=true;el.dataset.field=name;
+      el.innerHTML='<input type="checkbox" class="pf-check"'+(used?' checked':'')+' tabindex="-1"><span>'+name+'</span>';
+      el.addEventListener('dragstart',e=>{dragFieldName=name;el.classList.add('dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',name);});
+      el.addEventListener('dragend',()=>{dragFieldName=null;el.classList.remove('dragging');document.querySelectorAll('.pivot-zone').forEach(z=>z.classList.remove('drag-over'));});
+      el.addEventListener('dblclick',()=>{
+        if(['filters','columns','rows'].some(z=>fieldInZone(z,name)))return;
+        if(fieldInZone('values',name))return;
+        movePivotField(name,isNumericField(p.sourceSheetIndex,name)?'values':'rows');
+      });
+      pivotFieldList.appendChild(el);
+    });
+    ['filters','columns','rows','values'].forEach(zone=>{
+      const chipBox=zoneEls[zone];chipBox.innerHTML='';
+      pivotLayout()[zone].forEach(item=>{
+        const chip=document.createElement('span');chip.className='pivot-chip';
+        const lab=document.createElement('span');lab.className='pivot-chip-label';
+        const grouped=zone!=='values'&&p.groupings&&p.groupings[item];
+        lab.textContent=(zone==='values'?valueCaption(item,p.layout.values):item)+(grouped?' · группа':'');
+        chip.appendChild(lab);
+        if(zone==='values'){
+          const menuBtn=document.createElement('button');menuBtn.type='button';menuBtn.className='pivot-chip-menu';menuBtn.textContent='▾';menuBtn.title='Меню поля';
+          menuBtn.addEventListener('click',ev=>{ev.stopPropagation();ev.preventDefault();const rect=menuBtn.getBoundingClientRect();showValueMenu(rect.left,rect.bottom+2,item.id);});
+          chip.appendChild(menuBtn);
+        }
+        const rm=document.createElement('button');rm.type='button';rm.title='Убрать';rm.setAttribute('aria-label','Убрать');rm.textContent='×';
+        rm.addEventListener('click',ev=>{ev.stopPropagation();if(zone==='values')removeValueField(item.id);else movePivotField(item,'remove');});
+        chip.appendChild(rm);chipBox.appendChild(chip);
+      });
+    });
+  }
+  function renderExcelTimeline(p,tl){
+    if(!tl.level)tl.level='years';
+    if(tl.scroll==null)tl.scroll=0;
+    const box=document.createElement('div');box.className='pivot-timeline';
+    const top=document.createElement('div');top.className='pivot-timeline-top';
+    const title=document.createElement('div');title.className='pivot-timeline-title';title.textContent=tl.field;
+    const clr=document.createElement('button');clr.type='button';clr.className='pivot-timeline-clear';clr.title='Очистить фильтр';clr.innerHTML='⛭';
+    clr.addEventListener('click',()=>{timelineWriteSelection(tl,timelineKeysForLevel(p,tl),new Set(timelineKeysForLevel(p,tl)));renderPivotUI();checkProgress();});
+    top.appendChild(title);top.appendChild(clr);box.appendChild(top);
+    const allKeys=timelineKeysForLevel(p,tl);
+    const sel=timelineSelectionSet(tl,allKeys);
+    const meta=document.createElement('div');meta.className='pivot-timeline-meta';
+    const period=document.createElement('span');period.className='pivot-timeline-period';
+    period.textContent=timelinePeriodLabel(tl,allKeys,sel);
+    const lvlWrap=document.createElement('div');lvlWrap.className='pivot-timeline-level-wrap';
+    const lvlBtn=document.createElement('button');lvlBtn.type='button';lvlBtn.className='pivot-timeline-level';
+    lvlBtn.textContent=timelineLevelLabel(tl.level);
+    const lvlArr=document.createElement('span');lvlArr.className='pivot-timeline-level-arrow';lvlArr.textContent='▾';
+    lvlWrap.appendChild(lvlBtn);lvlWrap.appendChild(lvlArr);
+    lvlBtn.addEventListener('click',ev=>{
+      ev.stopPropagation();closeRibbonMenu();closeContextMenu();
+      showRibbonMenu(lvlBtn,TIMELINE_LEVELS.map(pair=>({
+        label:(tl.level===pair[0]?'✓ ':'')+pair[1],
+        action:()=>{tl.level=pair[0];tl.scroll=0;renderPivotUI();checkProgress();}
+      })));
+    });
+    meta.appendChild(period);meta.appendChild(lvlWrap);box.appendChild(meta);
+    const rule=document.createElement('div');rule.className='pivot-timeline-rule';box.appendChild(rule);
+    const windowSize=tl.level==='years'?Math.min(7,allKeys.length):7;
+    const maxScroll=Math.max(0,allKeys.length-windowSize);
+    tl.scroll=Math.max(0,Math.min(maxScroll,tl.scroll||0));
+    const visible=allKeys.slice(tl.scroll,tl.scroll+windowSize);
+    const scale=document.createElement('div');scale.className='pivot-timeline-scale';
+    if(tl.level==='months'&&visible.length){
+      const yr=visible[0].split('-')[0];
+      const yrEl=document.createElement('div');yrEl.className='pivot-timeline-year';yrEl.textContent=yr;
+      scale.appendChild(yrEl);
+    }else if(tl.level==='years'&&visible.length===1){
+      const yrEl=document.createElement('div');yrEl.className='pivot-timeline-year';yrEl.textContent=visible[0];
+      scale.appendChild(yrEl);
+    }
+    box.appendChild(scale);
+    const labels=document.createElement('div');labels.className='pivot-timeline-labels';
+    visible.forEach(k=>{
+      const sp=document.createElement('span');
+      if(tl.level==='months'){const p=k.split('-');sp.textContent=MONTHS_SHORT_RU[Number(p[1])-1];}
+      else if(tl.level==='quarters'){const p=k.split('-Q');sp.textContent='Q'+p[1];}
+      else sp.textContent=k;
+      labels.appendChild(sp);
+    });
+    box.appendChild(labels);
+    const barWrap=document.createElement('div');barWrap.className='pivot-timeline-bar-wrap';
+    const bar=document.createElement('div');bar.className='pivot-timeline-bar';
+    visible.forEach(k=>{
+      const seg=document.createElement('div');seg.className='pivot-timeline-seg'+(sel.has(k)?' selected':'');
+      seg.title=k;
+      seg.addEventListener('click',()=>{
+        const all=timelineKeysForLevel(p,tl);
+        let next=timelineSelectionSet(tl,all);
+        if(next.has(k)&&next.size>1)next.delete(k);
+        else if(!next.has(k))next.add(k);
+        else next=new Set([k]);
+        timelineWriteSelection(tl,all,next);
+        renderPivotUI();checkProgress();
+      });
+      bar.appendChild(seg);
+    });
+    barWrap.appendChild(bar);box.appendChild(barWrap);
+    if(allKeys.length>windowSize){
+      const sc=document.createElement('div');sc.className='pivot-timeline-scroll';
+      const left=document.createElement('button');left.type='button';left.textContent='◀';
+      const track=document.createElement('div');track.className='pivot-timeline-scroll-track';
+      const thumb=document.createElement('div');thumb.className='pivot-timeline-scroll-thumb';
+      const ratio=windowSize/allKeys.length;
+      thumb.style.width=Math.max(18,ratio*100)+'%';
+      thumb.style.left=(maxScroll?((tl.scroll/maxScroll)*(100-ratio*100)):0)+'%';
+      track.appendChild(thumb);
+      const right=document.createElement('button');right.type='button';right.textContent='▶';
+      left.addEventListener('click',()=>{tl.scroll=Math.max(0,tl.scroll-1);renderPivotUI();});
+      right.addEventListener('click',()=>{tl.scroll=Math.min(maxScroll,tl.scroll+1);renderPivotUI();});
+      sc.appendChild(left);sc.appendChild(track);sc.appendChild(right);box.appendChild(sc);
+    }
+    return box;
+  }
+  function renderPivotSlicers(){
+    const p=getActivePivot();
+    if(!p||(!p.slicers.length&&!p.timelines.length)){pivotSlicerDock.hidden=true;pivotSlicerDock.innerHTML='';return;}
+    pivotSlicerDock.hidden=false;pivotSlicerDock.innerHTML='';
+    p.slicers.forEach(sl=>{
+      if(!sl.connected)return;
+      const cols=sl.columns||1;
+      const box=document.createElement('div');box.className='pivot-slicer style-'+(sl.style||'light')+' slicer-cols-'+cols;
+      const head=document.createElement('div');head.className='pivot-slicer-head';
+      const title=document.createElement('span');title.textContent=sl.field;
+      const clr=document.createElement('button');clr.type='button';clr.className='pivot-slicer-clear';clr.title='Очистить фильтр среза';clr.textContent='×';
+      clr.addEventListener('click',()=>{sl.selected=null;renderPivotUI();checkProgress();showToast('Фильтр среза «'+sl.field+'» сброшен.');});
+      head.appendChild(title);head.appendChild(clr);box.appendChild(head);
+      const body=document.createElement('div');body.className='pivot-slicer-body';
+      body.style.gridTemplateColumns='repeat('+cols+', minmax(0, 1fr))';
+      const all=slicerAllValues(p,sl.field);
+      const sel=sl.selected?new Set(sl.selected):new Set(all);
+      all.forEach(v=>{
+        const b=document.createElement('button');b.type='button';
+        b.className='pivot-slicer-btn'+(sel.has(v)?' selected':'');
+        b.textContent=v;
+        b.addEventListener('click',ev=>{
+          const allVals=slicerAllValues(p,sl.field);
+          let next=sl.selected?new Set(sl.selected):new Set(allVals);
+          if(ev.ctrlKey||ev.metaKey){
+            if(next.has(v))next.delete(v);else next.add(v);
+            if(!next.size)next.add(v);
+          }else next=new Set([v]);
+          sl.selected=next.size>=allVals.length?null:new Set(next);
+          renderPivotUI();checkProgress();
+        });
+        body.appendChild(b);
+      });
+      box.appendChild(body);
+      box.addEventListener('contextmenu',ev=>{
+        ev.preventDefault();editingSlicerId=sl.id;
+        document.getElementById('slicerColumns').value=String(sl.columns||1);
+        document.getElementById('slicerStyle').value=sl.style||'light';
+        openModal('modalSlicerSettings');
+      });
+      pivotSlicerDock.appendChild(box);
+    });
+    p.timelines.forEach(tl=>{if(tl.connected)pivotSlicerDock.appendChild(renderExcelTimeline(p,tl));});
+    syncContextualRibbonTabs();
+  }
+  function openAxisFilterModal(field){
+    const p=getActivePivot();if(!p)return;
+    axisFilterField=field;
+    document.getElementById('axisFilterTitle').textContent='Фильтр: '+field;
+    const box=document.getElementById('axisFilterLabels');box.innerHTML='';
+    const all=uniqueSorted(recordsForPivot(p).map(r=>r[field]));
+    const af=p.axisFilters&&p.axisFilters[field];
+    const selected=af&&af.type==='labels'&&af.selected?new Set(af.selected):new Set(all);
+    const allLbl=document.createElement('label');allLbl.className='group-check';
+    const allCb=document.createElement('input');allCb.type='checkbox';allCb.checked=selected.size===all.length;
+    allLbl.appendChild(allCb);allLbl.appendChild(document.createTextNode(' (Выбрать все)'));box.appendChild(allLbl);
+    box.appendChild(document.createElement('hr'));
+    const cbs=[];
+    all.forEach(v=>{
+      const lbl=document.createElement('label');lbl.className='group-check';
+      const cb=document.createElement('input');cb.type='checkbox';cb.value=v;cb.checked=selected.has(v);
+      lbl.appendChild(cb);lbl.appendChild(document.createTextNode(' '+v));box.appendChild(lbl);cbs.push(cb);
+    });
+    allCb.addEventListener('change',()=>cbs.forEach(cb=>{cb.checked=allCb.checked;}));
+    const vaf=af&&af.type==='value'?af:null;
+    document.getElementById('axisValueOp').value=vaf&&vaf.op?vaf.op:'';
+    document.getElementById('axisValueThreshold').value=vaf&&isFinite(vaf.threshold)?String(vaf.threshold):'';
+    openModal('modalAxisFilter');
+  }
+  function applyAxisFilterModal(){
+    const p=getActivePivot();if(!p||!axisFilterField)return;
+    if(!p.axisFilters)p.axisFilters={};
+    const field=axisFilterField;
+    const cbs=[...document.querySelectorAll('#axisFilterLabels input[type=checkbox]')].filter(cb=>cb.value);
+    const chosen=cbs.filter(cb=>cb.checked).map(cb=>cb.value);
+    const all=uniqueSorted(recordsForPivot(p).map(r=>r[field]));
+    const op=document.getElementById('axisValueOp').value;
+    const thr=parseGroupNumber(document.getElementById('axisValueThreshold').value);
+    let next=null;
+    if(op&&isFinite(thr))next={type:'value',op,threshold:thr};
+    else if(chosen.length&&chosen.length<all.length)next={type:'labels',selected:new Set(chosen)};
+    if(next)p.axisFilters[field]=next;else delete p.axisFilters[field];
+    axisFilterField=null;closeModal('modalAxisFilter');renderPivotUI();checkProgress();
+  }
+  function clearAxisFilterModal(){
+    const p=getActivePivot();if(!p||!axisFilterField)return;
+    if(p.axisFilters)delete p.axisFilters[axisFilterField];
+    axisFilterField=null;closeModal('modalAxisFilter');renderPivotUI();checkProgress();
+  }
+  function openInsertSlicerModal(){
+    const p=getActivePivot();if(!p){showToast('Сначала создайте сводную и перейдите на её лист.');return;}
+    const box=document.getElementById('insertSlicerFields');box.innerHTML='';
+    getRegistryHeaders(p.sourceSheetIndex).forEach(name=>{
+      if(name===ID_FIELD||name===COMMISSION_FIELD||name===STATUS_FIELD)return;
+      const lbl=document.createElement('label');lbl.className='group-check';
+      const cb=document.createElement('input');cb.type='checkbox';cb.value=name;
+      if(p.slicers.some(s=>s.field===name))cb.checked=true;
+      lbl.appendChild(cb);lbl.appendChild(document.createTextNode(' '+name));box.appendChild(lbl);
+    });
+    openModal('modalInsertSlicer');
+  }
+  function applyInsertSlicerModal(){
+    const p=getActivePivot();if(!p)return;
+    const picked=[...document.querySelectorAll('#insertSlicerFields input:checked')].map(cb=>cb.value);
+    picked.forEach(field=>{
+      if(p.slicers.some(s=>s.field===field))return;
+      p.slicers.push({id:'sl'+(slicerSeq++),field,selected:null,columns:1,style:'light',connected:true});
+    });
+    closeModal('modalInsertSlicer');renderPivotUI();checkProgress();
+    showToast('Срезы добавлены на лист.');
+  }
+  function openInsertTimelineModal(){
+    const p=getActivePivot();if(!p){showToast('Сначала создайте сводную.');return;}
+    const sel=document.getElementById('timelineFieldSelect');sel.innerHTML='';
+    getRegistryHeaders(p.sourceSheetIndex).forEach(name=>{
+      const recs=recordsForPivot(p);
+      if(!detectGroupKind(recs,name))return;
+      const opt=document.createElement('option');opt.value=name;opt.textContent=name;sel.appendChild(opt);
+    });
+    if(!sel.options.length){showToast('Нет полей с датами для временной шкалы.');return;}
+    openModal('modalInsertTimeline');
+  }
+  function applyInsertTimelineModal(){
+    const p=getActivePivot();if(!p)return;
+    const field=document.getElementById('timelineFieldSelect').value;
+    if(!field)return;
+    if(!p.timelines.some(t=>t.field===field)){
+      p.timelines.push({id:'tl'+(timelineSeq++),field,level:'years',years:null,months:null,quarters:null,scroll:0,connected:true});
+    }
+    closeModal('modalInsertTimeline');renderPivotUI();checkProgress();
+    showToast('Временная шкала добавлена.');
+  }
+  function applySlicerSettingsModal(){
+    const p=getActivePivot();if(!p||!editingSlicerId)return;
+    const sl=p.slicers.find(s=>s.id===editingSlicerId);if(!sl)return;
+    sl.columns=Math.max(1,Math.min(4,Number(document.getElementById('slicerColumns').value)||1));
+    sl.style=document.getElementById('slicerStyle').value||'light';
+    editingSlicerId=null;closeModal('modalSlicerSettings');renderPivotUI();checkProgress();
+  }
+  function renderPivotFilterBar(){
+    const p=getActivePivot();if(!p||!p.layout.filters.length){pivotFilterBar.hidden=true;pivotFilterBar.innerHTML='';return;}
+    pivotFilterBar.hidden=false;pivotFilterBar.innerHTML='';
+    p.layout.filters.forEach(field=>{
+      const wrap=document.createElement('span');wrap.style.display='inline-flex';wrap.style.alignItems='center';wrap.style.gap='6px';
+      const lbl=document.createElement('label');lbl.textContent=field+':';
+      const sel=document.createElement('select');
+      const allVals=uniqueSorted(recordsForPivot(p).map(r=>r[field]));
+      const chosen=p.filterSelections[field]||new Set(allVals);
+      allVals.forEach(v=>{
+        const opt=document.createElement('option');opt.value=v;opt.textContent=v;
+        if(chosen.size===1&&chosen.has(v))opt.selected=true;
+        sel.appendChild(opt);
+      });
+      const any=document.createElement('option');any.value='';any.textContent='(Все)';sel.insertBefore(any,sel.firstChild);
+      if(chosen.size===1)sel.value=[...chosen][0];else sel.value='';
+      sel.addEventListener('change',()=>{
+        if(!sel.value)p.filterSelections[field]=new Set(allVals);
+        else p.filterSelections[field]=new Set([sel.value]);
+        renderPivotUI();checkProgress();
+      });
+      wrap.appendChild(lbl);wrap.appendChild(sel);pivotFilterBar.appendChild(wrap);
+    });
+  }
+  function renderPivotGrid(){
+    const sh=sheet(),p=sh.pivot;if(!p)return;
+    if(!p.cache)capturePivotCache(p);
+    const result=computePivotResult(p);
+    pivotItems=result.visible;
+    grid.innerHTML='';grid.classList.add('pivot-table');
+    const thead=document.createElement('thead'),tbody=document.createElement('tbody');
+    const vfs=result.valFields,hasCols=result.colFields.length>0,hasRows=result.levels.length>0;
+    const nested=result.levels.length>1;
+    function makeTh(text,vfId){
+      const el=document.createElement('th');el.textContent=text;
+      if(vfId){el.dataset.vfId=vfId;el.title='Двойной щелчок — параметры поля значений';el.classList.add('pivot-value-header');}
+      return el;
+    }
+    function makeTd(text,vfId,cls){
+      const el=document.createElement('td');el.textContent=text;
+      if(vfId)el.dataset.vfId=vfId;
+      if(cls)cls.split(' ').forEach(c=>el.classList.add(c));
+      return el;
+    }
+    if(!vfs.length){
+      const tr=document.createElement('tr'),td=document.createElement('td');
+      td.colSpan=2;td.className='text-left';td.textContent='Перетащите поля в области «Строки» и «Значения». Одно и то же поле можно положить в «Значения» несколько раз.';
+      tr.appendChild(td);tbody.appendChild(tr);grid.appendChild(tbody);
+    }else{
+      const hr=document.createElement('tr');
+      const corner=document.createElement('th');
+      corner.textContent=hasRows?result.levels.map(levelTitle).join(' / '):'';
+      corner.dataset.pivotHeader='1';
+      corner.title='Группировка применяется к значению в строках, а не к заголовку';
+      if(hasRows&&result.levels.length===1&&result.levels[0].kind==='raw'){
+        const axisField=result.levels[0].field;
+        const arrow=document.createElement('span');
+        arrow.className='pivot-axis-filter-arrow'+((p.axisFilters&&p.axisFilters[axisField])?' active':'');
+        arrow.textContent='▼';
+        arrow.title='Фильтр';
+        arrow.addEventListener('mousedown',ev=>{ev.stopPropagation();ev.preventDefault();openAxisFilterModal(axisField);});
+        corner.appendChild(arrow);
+      }
+      if(hasCols&&vfs.length>1)corner.rowSpan=2;
+      hr.appendChild(corner);
+      if(hasCols){
+        result.colKeys.forEach(ck=>{
+          const h=document.createElement('th');h.textContent=ck.join(' / ')||' ';h.classList.add('pivot-col-header');
+          if(vfs.length>1)h.colSpan=vfs.length;else h.dataset.vfId=vfs[0].id;
+          hr.appendChild(h);
+        });
+        if(hasRows){
+          const h=document.createElement('th');h.textContent='Общий итог';h.classList.add('pivot-col-header');
+          if(vfs.length>1)h.colSpan=vfs.length;else h.dataset.vfId=vfs[0].id;
+          hr.appendChild(h);
+        }
+        thead.appendChild(hr);
+        if(vfs.length>1){
+          const hr2=document.createElement('tr');
+          const groups=result.colKeys.length+(hasRows?1:0);
+          for(let g=0;g<groups;g++)vfs.forEach(vf=>hr2.appendChild(makeTh(valueCaption(vf,vfs),vf.id)));
+          thead.appendChild(hr2);
+        }
+      }else{
+        vfs.forEach(vf=>hr.appendChild(makeTh(valueCaption(vf,vfs),vf.id)));
+        thead.appendChild(hr);
+      }
+      if(hasRows){
+        result.visible.forEach((item,ri)=>{
+          const tr=document.createElement('tr');
+          const label=document.createElement('td');
+          label.classList.add('pivot-row-label','text-left');
+          if(item.hasChildren)label.classList.add('pivot-parent');
+          label.dataset.pivotItem='1';label.dataset.nid=String(ri);
+          label.style.paddingLeft=(8+item.depth*16)+'px';
+          if(pivotSel&&pivotSel.kind==='item'&&pivotSel.field===item.field&&pivotSel.key===item.key)label.classList.add('pivot-item-selected');
+          if(p.showExpandButtons&&(item.hasChildren||nested)){
+            if(item.hasChildren){
+              const b=document.createElement('button');b.type='button';b.className='pivot-twist';
+              b.textContent=item.collapsed?'+':'−';b.title=item.collapsed?'Развернуть':'Свернуть';
+              b.dataset.twist='1';b.dataset.nid=String(ri);
+              label.appendChild(b);
+            }else{const sp=document.createElement('span');sp.className='pivot-twist-spacer';label.appendChild(sp);}
+          }
+          label.appendChild(document.createTextNode(item.label||' '));
+          tr.appendChild(label);
+          if(hasCols){
+            result.colKeys.forEach((_,ci)=>vfs.forEach((vf,vi)=>tr.appendChild(makeTd(formatVf(result.cells[ri][ci][vi],result.grand[vi],vf),vf.id,''))));
+            vfs.forEach((vf,vi)=>tr.appendChild(makeTd(formatVf(result.rowTotals[ri][vi],result.grand[vi],vf),vf.id,'pivot-total')));
+          }else vfs.forEach((vf,vi)=>tr.appendChild(makeTd(formatVf(result.cells[ri][0][vi],result.grand[vi],vf),vf.id,'')));
+          tbody.appendChild(tr);
+        });
+      }
+      const tr=document.createElement('tr');tr.classList.add('pivot-grand-row');
+      const lbl=document.createElement('td');lbl.textContent='Общий итог';lbl.classList.add('pivot-grand-label','text-left');tr.appendChild(lbl);
+      if(hasCols){
+        result.colKeys.forEach((_,ci)=>vfs.forEach((vf,vi)=>tr.appendChild(makeTd(formatVf(result.colTotals[ci][vi],result.grand[vi],vf),vf.id,'pivot-total'))));
+        if(hasRows)vfs.forEach((vf,vi)=>tr.appendChild(makeTd(formatVf(result.grand[vi],result.grand[vi],vf),vf.id,'pivot-total')));
+      }else vfs.forEach((vf,vi)=>tr.appendChild(makeTd(formatVf(result.grand[vi],result.grand[vi],vf),vf.id,'pivot-total')));
+      tbody.appendChild(tr);
+      grid.appendChild(thead);grid.appendChild(tbody);
+    }
+    renderPivotSlicers();renderPivotFilterBar();renderPivotFieldsPanel();renderStaleBar();renderPivotChart();
+  }
+  function chartCategoriesFromPivot(p){
+    if(!p||!p.layout.values.length)return [];
+    const result=computePivotResult(p);
+    if(!result.visible.length)return [];
+    const vi=0;
+    return result.visible.map((item,ri)=>[item.label,result.rowTotals[ri][vi]]);
+  }
+  function renderPivotChart(){
+    const dock=document.getElementById('pivotChartDock');
+    if(!dock)return;
+    const p=getActivePivot();
+    if(!p||!p.chart||!p.chart.connected||p.chart.type!=='column'){
+      dock.hidden=true;dock.innerHTML='';return;
+    }
+    const cats=chartCategoriesFromPivot(p);
+    if(!cats.length){dock.hidden=true;dock.innerHTML='';return;}
+    dock.hidden=false;
+    const maxVal=Math.max(...cats.map(([,v])=>v),1);
+    const w=Math.min(640,Math.max(320,cats.length*52+80));
+    const h=220;
+    const padL=48,padB=36,padT=16,padR=16;
+    const innerW=w-padL-padR,innerH=h-padT-padB;
+    const barW=Math.min(36,innerW/cats.length*0.55);
+    let bars='';
+    cats.forEach(([label,val],i)=>{
+      const bh=Math.max(2,(val/maxVal)*innerH);
+      const x=padL+i*(innerW/cats.length)+(innerW/cats.length-barW)/2;
+      const y=padT+innerH-bh;
+      bars+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+bh.toFixed(1)+'" fill="#217346" rx="2"/>';
+      bars+='<text x="'+(x+barW/2).toFixed(1)+'" y="'+(h-8)+'" text-anchor="middle" font-size="9" fill="#5c6b64">'+escapeXml(label.length>10?label.slice(0,9)+'…':label)+'</text>';
+      if(bh>14)bars+='<text x="'+(x+barW/2).toFixed(1)+'" y="'+(y-4)+'" text-anchor="middle" font-size="9" fill="#185c37">'+Math.round(val).toLocaleString('ru-RU')+'</text>';
+    });
+    dock.innerHTML='<p class="pivot-chart-title">Сводная диаграмма</p><svg class="pivot-chart-svg" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Столбчатая диаграмма по сводной таблице">'+bars+'</svg><p class="pivot-chart-note">Диаграмма строится по отфильтрованным данным сводной (срезы и фильтры учитываются).</p>';
+  }
+  function escapeXml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
+  function insertPivotChart(){
+    const p=getActivePivot();
+    if(!p){showToast('Сначала создайте сводную и перейдите на её лист.');return;}
+    if(!p.layout.values.length){showToast('Добавьте показатель в область «Значения».');return;}
+    p.chart={type:'column',connected:true};
+    renderPivotUI();checkProgress();
+    showToast('Сводная диаграмма добавлена на лист.');
+  }
+  function applyPendingRegistryRows(){
+    if(pendingRegistryApplied)return false;
+    const sh=sheets[0];
+    const nextRow=registryDataEnd+1;
+    if(nextRow>=ROWS)return false;
+    pushUndo();
+    PENDING_ROW.forEach((v,c)=>{sh.rows[nextRow][c]=v;});
+    sh.formats[cellKey(nextRow,1)]='date';
+    sh.formats[cellKey(nextRow,4)]='number';
+    registryDataEnd=nextRow;
+    pendingRegistryApplied=true;
+    const ps=getPivotSheet();
+    if(ps)ps.pivot.stale=true;
+    return true;
+  }
+  function simulateWorkbookOpen(){
+    const added=applyPendingRegistryRows();
+    refreshAllPivots();
+    if(added)showToast('Файл открыт снова: подтянуты допродажи из связанного файла Допродажи_декабрь.csv.');
+    else if(pendingRegistryApplied)showToast('Книга открыта снова: сводная обновлена по реестру.');
+    else showToast('Книга открыта. Новых строк в связанном файле нет.');
+    renderGrid();checkProgress();
+  }
+  function openConnectionsModal(){
+    document.getElementById('connRefreshOnOpen').checked=!!workbookConnections.refreshOnOpen;
+    openModal('modalConnections');
+  }
+  function applyConnectionsModal(){
+    workbookConnections.refreshOnOpen=!!document.getElementById('connRefreshOnOpen').checked;
+    closeModal('modalConnections');checkProgress();scheduleSave();
+    showToast(workbookConnections.refreshOnOpen?'При открытии файла данные из связи будут обновляться.':'Обновление при открытии отключено.');
+  }
+  function renderPivotUI(){
+    const bar=document.getElementById('pivotStaleBar');
+    const chartDock=document.getElementById('pivotChartDock');
+    if(isPivotSheet(sheet()))renderPivotGrid();
+    else{
+      pivotFieldsPanel.hidden=true;pivotFilterBar.hidden=true;pivotSlicerDock.hidden=true;
+      if(chartDock)chartDock.hidden=true;
+      if(bar)bar.hidden=true;grid.classList.remove('pivot-table');
+    }
+  }
+  function parseGroupNumber(s){
+    const t=String(s==null?'':s).replace(/\s/g,'').replace(',','.').replace(/₽/g,'');
+    if(!/^-?\d+(\.\d+)?$/.test(t))return NaN;
+    return Number(t);
+  }
+  function pivotItemFromEl(el){if(!el||el.dataset.nid==null||el.dataset.nid==='')return null;return pivotItems[Number(el.dataset.nid)]||null;}
+  function toggleCollapse(field,key){
+    const p=getActivePivot();if(!p||!p.groupings||!p.groupings[field])return;
+    const g=p.groupings[field];if(!g.collapsed)g.collapsed={};
+    if(g.collapsed[key])delete g.collapsed[key];else g.collapsed[key]=true;
+    renderPivotUI();checkProgress();
+  }
+  function openExcelAlert(msg){
+    document.getElementById('excelAlertText').textContent=msg;
+    openModal('modalExcelAlert');
+  }
+  function openGroupForField(field){
+    const p=getActivePivot();if(!p){showToast('Группировка доступна на листе сводной.');return;}
+    if(!field||!p.layout.rows.includes(field)){showToast('Щёлкните по значению в строках сводной — по дате или числу, а не по заголовку поля.');return;}
+    const recs=recordsForPivot(p);
+    const kind=detectGroupKind(recs,field);
+    if(!kind||fieldGroupError(recs,field,kind)){openExcelAlert('Невозможно сгруппировать выделенные объекты.');return;}
+    groupingTargetField=field;
+    const modal=document.getElementById('modalGroup');modal.dataset.kind=kind;
+    document.getElementById('groupDateBox').hidden=kind!=='date';
+    document.getElementById('groupNumBox').hidden=kind!=='number';
+    if(kind==='date'){
+      const g=p.groupings&&p.groupings[field];
+      const units=g&&g.type==='date'?g.units:[];
+      document.getElementById('gDays').checked=units.indexOf('days')>=0;
+      document.getElementById('gMonths').checked=units.indexOf('months')>=0;
+      document.getElementById('gQuarters').checked=units.indexOf('quarters')>=0;
+      document.getElementById('gYears').checked=units.indexOf('years')>=0;
+      const dates=recs.map(r=>parseDateValue(r[field])).filter(Boolean).sort((a,b)=>a-b);
+      document.getElementById('gDateFrom').value=dates.length?formatDateRu(dates[0]):'';
+      document.getElementById('gDateTo').value=dates.length?formatDateRu(dates[dates.length-1]):'';
+    }else{
+      const g=p.groupings&&p.groupings[field]&&p.groupings[field].type==='number'?p.groupings[field]:null;
+      const nums=numericValues(recs,field);
+      const min=nums.length?Math.min.apply(null,nums):0,max=nums.length?Math.max.apply(null,nums):0;
+      document.getElementById('gStart').value=g?String(g.start):String(min);
+      document.getElementById('gEnd').value=g?String(g.end):String(max);
+      document.getElementById('gStep').value=g?String(g.step):'';
+    }
+    openModal('modalGroup');
+  }
+  function openGroupForSelection(){
+    if(!pivotSel||pivotSel.kind!=='item'){showToast('Щёлкните по значению в строках сводной — по дате или числу, а не по заголовку поля.');return;}
+    openGroupForField(pivotSel.field);
+  }
+  function applyGroupDialog(){
+    const p=getActivePivot();const field=groupingTargetField;if(!p||!field)return;
+    if(!p.groupings)p.groupings={};
+    const kind=document.getElementById('modalGroup').dataset.kind;
+    if(kind==='date'){
+      const units=[];
+      if(document.getElementById('gYears').checked)units.push('years');
+      if(document.getElementById('gQuarters').checked)units.push('quarters');
+      if(document.getElementById('gMonths').checked)units.push('months');
+      if(document.getElementById('gDays').checked)units.push('days');
+      if(!units.length){showToast('Отметьте хотя бы одну единицу: дни, месяцы, кварталы или годы.');return;}
+      const prev=p.groupings[field];
+      const next=orderedUnits(units);
+      const same=prev&&prev.type==='date'&&orderedUnits(prev.units).join()===next.join();
+      p.groupings[field]={type:'date',units:next,collapsed:same&&prev.collapsed?Object.assign({},prev.collapsed):{}};
+    }else{
+      const start=parseGroupNumber(document.getElementById('gStart').value);
+      const end=parseGroupNumber(document.getElementById('gEnd').value);
+      const step=parseGroupNumber(document.getElementById('gStep').value);
+      if(!isFinite(start)||!isFinite(end)||!isFinite(step)||step<=0||end<start){showToast('Проверьте «начиная с», «по» и «с шагом». Шаг должен быть больше нуля.');return;}
+      p.groupings[field]={type:'number',start,end,step,collapsed:{}};
+    }
+    groupingTargetField=null;closeModal('modalGroup');renderPivotUI();checkProgress();
+    showToast('Группировка применена. Исходные данные не изменились.');
+  }
+  function ungroupField(field){
+    const p=getActivePivot();if(!p)return;
+    if(!field&&pivotSel&&pivotSel.kind==='item')field=pivotSel.field;
+    if(!field||!p.groupings||!p.groupings[field]){showToast('Это поле не сгруппировано. Щёлкните по сгруппированному значению.');return;}
+    delete p.groupings[field];renderPivotUI();checkProgress();
+    showToast('Группировка снята. Исходный реестр не изменился.');
+  }
+  function toggleExpandButtons(){
+    const p=getActivePivot();if(!p)return;
+    p.showExpandButtons=!p.showExpandButtons;
+    renderPivotUI();
+    const pivotTab=ribbonTabs.querySelector('[data-tab="pivot"]');
+    if(pivotTab&&pivotTab.classList.contains('active'))switchRibbonTab('pivot');
+    checkProgress();
+    showToast(p.showExpandButtons?'Кнопки +/− включены.':'Кнопки +/− скрыты.');
+  }
+  function showGroupMenu(clientX,clientY,field,key,hasChildren){
+    closeContextMenu();closeFilterDropdown();closeRibbonMenu();
+    const p=getActivePivot();if(!p)return;
+    const menu=document.createElement('div');menu.className='row-context-menu';
+    function addBtn(label,action,disabled){
+      const b=document.createElement('button');b.type='button';b.textContent=label;
+      if(disabled)b.disabled=true;else b.addEventListener('click',()=>{closeContextMenu();action();});
+      menu.appendChild(b);
+    }
+    addBtn('Группировать…',()=>openGroupForField(field));
+    addBtn('Разгруппировать',()=>ungroupField(field),!(p.groupings&&p.groupings[field]));
+    if(hasChildren&&p.showExpandButtons){
+      const collapsed=isCollapsedPivot(p,field,key);
+      addBtn(collapsed?'Развернуть':'Свернуть',()=>toggleCollapse(field,key));
+    }
+    menu.appendChild(document.createElement('hr'));
+    addBtn('Обновить',()=>refreshActivePivot(true));
+    document.body.appendChild(menu);contextMenuEl=menu;
+    menu.style.left=Math.min(clientX,window.innerWidth-menu.offsetWidth-12)+'px';
+    menu.style.top=Math.min(clientY,window.innerHeight-menu.offsetHeight-12)+'px';
+    setTimeout(()=>document.addEventListener('mousedown',function outside(ev){
+      if(menu.contains(ev.target)){document.addEventListener('mousedown',outside,{once:true});return;}
+      closeContextMenu();
+    },{once:true}),0);
+  }
+  function bindPivotDropZones(){
+    document.querySelectorAll('.pivot-zone').forEach(zoneEl=>{
+      zoneEl.addEventListener('dragover',e=>{e.preventDefault();zoneEl.classList.add('drag-over');});
+      zoneEl.addEventListener('dragleave',()=>zoneEl.classList.remove('drag-over'));
+      zoneEl.addEventListener('drop',e=>{
+        e.preventDefault();zoneEl.classList.remove('drag-over');
+        const name=dragFieldName||(e.dataTransfer&&e.dataTransfer.getData('text/plain'));
+        if(!name||!getActivePivot())return;
+        movePivotField(name,zoneEl.dataset.zone);dragFieldName=null;
+      });
+    });
+  }
+  function openCreatePivot(){
+    if(getPivotSheet()){showToast('Сводная таблица уже создана — переключитесь на лист «Сводная1».');return;}
+    document.getElementById('pivotRange').value=rangeRef();
+    openModal('modalPivot');
+  }
+  function createPivotTable(){
+    if(getPivotSheet())return;
+    const ps=createPivotSheet('Сводная1',activeSheetIndex);
+    capturePivotCache(ps.pivot);
+    sheets.push(ps);activeSheetIndex=sheets.length-1;
+    selR=0;selC=0;clearSelRange();
+    renderGrid();renderSheetBar();syncContextualRibbonTabs();switchRibbonTab('pivot');
+    showToast('Сводная таблица создана на новом листе. Справа — список полей.');
+    checkProgress();
+  }
+  function togglePivotFieldList(){
+    const p=getActivePivot();if(!p)return;
+    p.fieldListVisible=!p.fieldListVisible;
+    renderPivotFieldsPanel();
+    if(p.fieldListVisible)showToast('Список полей сводной таблицы показан.');
+    checkProgress();
+  }
+  function switchToSheet(index){
+    if(index===activeSheetIndex||index<0||index>=sheets.length)return;
+    if(cellEditorInput)commitValue(cellEditorInput.value);
+    activeSheetIndex=index;selR=0;selC=0;pivotSel=null;clearSelRange();closeFilterDropdown();
+    renderGrid();updateRibbonForSheet();checkProgress();
+  }
+  function syncContextualRibbonTabs(){
+    const pivotTab=document.getElementById('ribbonTabPivot');
+    const slicerTab=document.getElementById('ribbonTabSlicerTools');
+    const hasPivot=!!getPivotSheet();
+    if(pivotTab)pivotTab.hidden=!hasPivot;
+    const p=getActivePivot();
+    const hasSlicers=!!(p&&p.slicers.some(s=>s.connected));
+    if(slicerTab)slicerTab.hidden=!hasSlicers;
+  }
+  function goToPivotAnalysisTab(){
+    const ps=getPivotSheet();
+    if(!ps){showToast('Сначала создайте сводную таблицу.');return;}
+    const idx=sheets.indexOf(ps);
+    if(idx>=0&&activeSheetIndex!==idx)switchToSheet(idx);
+    else{syncContextualRibbonTabs();switchRibbonTab('pivot');}
+  }
+  function updateRibbonForSheet(){
+    syncContextualRibbonTabs();
+    const active=ribbonTabs.querySelector('.active');
+    if(isPivotSheet(sheet())){
+      if(!active||active.dataset.tab==='home')switchRibbonTab('pivot');
+    }else if(active&&(active.dataset.tab==='pivot'||active.dataset.tab==='slicertools'))switchRibbonTab('home');
+  }
+  function applySlicerStyle(style,field){
+    const p=getActivePivot();if(!p)return;
+    const target=field||REGION_FIELD;
+    let touched=false;
+    p.slicers.forEach(s=>{if(s.field===target){s.style=style;touched=true;}});
+    if(!touched&&p.slicers.length)p.slicers[0].style=style;
+    renderPivotUI();checkProgress();
+    showToast('Стиль среза: '+(SLICER_STYLES[style]||style)+'.');
+  }
+  function managerSamplePivot(){
+    return{
+      sourceSheetIndex:0,
+      layout:{filters:[],columns:[REGION_FIELD],rows:[PRODUCT_FIELD],values:[{id:'vf_sample',field:COMMISSION_FIELD,agg:'sum',showAs:'none',customName:'',numFmt:'general'}]},
+      filterSelections:{},
+      axisFilters:{},
+      groupings:{},
+      slicers:[],
+      timelines:[]
+    };
+  }
+  function renderManagerTargetMatrix(){
+    const result=computePivotResult(managerSamplePivot(),buildReferenceRegistryRecords());
+    const tbl=document.createElement('table');
+    tbl.className='target-table';
+    const thead=document.createElement('thead');
+    const hr=document.createElement('tr');
+    const corner=document.createElement('th');
+    corner.textContent=PRODUCT_FIELD;
+    hr.appendChild(corner);
+    result.colKeys.forEach(ck=>{
+      const th=document.createElement('th');
+      th.textContent=ck.join(' / ')||' ';
+      hr.appendChild(th);
+    });
+    const totalTh=document.createElement('th');
+    totalTh.textContent='Общий итог';
+    hr.appendChild(totalTh);
+    thead.appendChild(hr);
+    tbl.appendChild(thead);
+    const tbody=document.createElement('tbody');
+    result.visible.forEach((item,ri)=>{
+      const tr=document.createElement('tr');
+      const lbl=document.createElement('td');
+      lbl.textContent=item.label;
+      tr.appendChild(lbl);
+      result.cells[ri].forEach((cellVals)=>{
+        const td=document.createElement('td');
+        td.textContent=formatPivotNumber(cellVals[0]);
+        tr.appendChild(td);
+      });
+      const rowTot=document.createElement('td');
+      rowTot.textContent=formatPivotNumber(result.rowTotals[ri][0]);
+      tr.appendChild(rowTot);
+      tbody.appendChild(tr);
+    });
+    const tr=document.createElement('tr');
+    const lbl=document.createElement('td');
+    lbl.textContent='Общий итог';
+    tr.appendChild(lbl);
+    result.colTotals.forEach(colTot=>{
+      const td=document.createElement('td');
+      td.textContent=formatPivotNumber(colTot[0]);
+      tr.appendChild(td);
+    });
+    const gt=document.createElement('td');
+    gt.textContent=formatPivotNumber(result.grand[0]);
+    tr.appendChild(gt);
+    tbody.appendChild(tr);
+    tbl.appendChild(tbody);
+    return tbl;
+  }
+  function renderTargetPanel(){
+    const t=functionStep<TASKS.length?TASKS[functionStep]:null;
+    if(!t||!t.target){targetPanel.hidden=true;return;}
+    targetPanel.hidden=false;
+    targetTableWrap.innerHTML='';
+    if(t.target.html){
+      const wrap=document.createElement('div');
+      wrap.innerHTML=t.target.html;
+      while(wrap.firstChild)targetTableWrap.appendChild(wrap.firstChild);
+    }
+    if(t.target.matrix)targetTableWrap.appendChild(renderManagerTargetMatrix());
+  }
+  function activePivot(){const ps=getPivotSheet();return ps?ps.pivot:null;}
+  function valueFields(){const p=activePivot();return p?p.layout.values:[];}
+  function rowsAre(fields){
+    const p=activePivot();if(!p)return false;const l=p.layout;
+    if(l.rows.length!==fields.length)return false;
+    return fields.every((f,i)=>l.rows[i]===f);
+  }
+  function columnsAre(fields){
+    const p=activePivot();if(!p)return false;
+    const l=p.layout;
+    if(l.columns.length!==fields.length)return false;
+    return fields.every((f,i)=>l.columns[i]===f);
+  }
+  function layoutIs(rows,cols,filters){
+    const p=activePivot();if(!p)return false;
+    const l=p.layout;
+    if(l.rows.length!==rows.length||l.columns.length!==cols.length||l.filters.length!==filters.length)return false;
+    return rows.every((f,i)=>l.rows[i]===f)&&cols.every((f,i)=>l.columns[i]===f)&&filters.every((f,i)=>l.filters[i]===f);
+  }
+  function reportFilterIs(field,values){
+    const p=activePivot();if(!p||!p.layout.filters.includes(field))return false;
+    const sel=p.filterSelections[field];if(!sel)return false;
+    const arr=Array.isArray(values)?values:[values];
+    return sel.size===arr.length&&arr.every(v=>sel.has(v));
+  }
+  function reportFilterShowsAll(field){
+    const p=activePivot();if(!p||!p.layout.filters.includes(field))return false;
+    const all=uniqueSorted(recordsForPivot(p).map(r=>r[field]));
+    const sel=p.filterSelections[field];
+    return !sel||sel.size>=all.length;
+  }
+  function axisLabelsAre(field,labels){
+    const p=activePivot();if(!p||!p.axisFilters||!p.axisFilters[field])return false;
+    const af=p.axisFilters[field];
+    if(af.type!=='labels'||!af.selected)return false;
+    return af.selected.size===labels.length&&labels.every(l=>af.selected.has(l));
+  }
+  function axisValueIs(field,op,threshold){
+    const p=activePivot();if(!p||!p.axisFilters||!p.axisFilters[field])return false;
+    const af=p.axisFilters[field];
+    return af.type==='value'&&af.op===op&&af.threshold===threshold;
+  }
+  function axisFilterClear(field){
+    const p=activePivot();return !!(p&&(!p.axisFilters||!p.axisFilters[field]));
+  }
+  function hasSlicer(field){
+    const p=activePivot();return !!(p&&p.slicers.some(s=>s.field===field&&s.connected));
+  }
+  function slicerPick(field,values){
+    const p=activePivot();if(!p)return false;
+    const sl=p.slicers.find(s=>s.field===field);if(!sl)return false;
+    const all=slicerAllValues(p,field);
+    const sel=sl.selected?new Set(sl.selected):new Set(all);
+    const arr=Array.isArray(values)?values:[values];
+    return sel.size===arr.length&&arr.every(v=>sel.has(v));
+  }
+  function slicerIsClear(field){
+    const p=activePivot();if(!p)return false;
+    const sl=p.slicers.find(s=>s.field===field);
+    return !!(sl&&sl.selected===null);
+  }
+  function hasTimeline(field){
+    const p=activePivot();return !!(p&&p.timelines.some(t=>t.field===field&&t.connected));
+  }
+  function timelinePick(field,years){
+    const p=activePivot();if(!p)return false;
+    const tl=p.timelines.find(t=>t.field===field);if(!tl)return false;
+    const all=timelineYears(p,field);
+    const sel=tl.years?new Set(tl.years):new Set(all);
+    const arr=Array.isArray(years)?years:[years];
+    return sel.size===arr.length&&arr.every(y=>sel.has(String(y)));
+  }
+  function grandTotalIs(n,opts){
+    const p=activePivot();if(!p||!p.layout.values.length)return false;
+    return Math.round(aggregate(pivotRecordsFiltered(p,opts),p.layout.values[0]))===n;
+  }
+  function slicerCols(field,n){
+    const p=activePivot();if(!p)return false;
+    const sl=p.slicers.find(s=>s.field===field);
+    return !!(sl&&(sl.columns||1)===n);
+  }
+  function slicerStyleIs(field,style){
+    const p=activePivot();if(!p)return false;
+    const sl=p.slicers.find(s=>s.field===field);
+    return !!(sl&&(sl.style||'light')===style);
+  }
+  function commissionMatrix(){return layoutIs([PRODUCT_FIELD],[REGION_FIELD],[])&&oneValue(COMMISSION_FIELD,'sum');}
+  function regionFilterLayout(){return layoutIs([PRODUCT_FIELD],[],[REGION_FIELD])&&oneValue(COMMISSION_FIELD,'sum');}
+  function oneValue(field,agg){
+    const vs=valueFields();
+    return vs.length===1&&vs[0].field===field&&vs[0].agg===agg&&(vs[0].showAs||'none')==='none';
+  }
+  function groupOf(field){const p=activePivot();return p&&p.groupings?p.groupings[field]:null;}
+  function unitsExact(field,units){
+    const g=groupOf(field);if(!g||g.type!=='date')return false;
+    return orderedUnits(g.units).join()===orderedUnits(units).join();
+  }
+  function numberGroupIs(field,start,end,step){
+    const g=groupOf(field);
+    return !!g&&g.type==='number'&&g.start===start&&g.end===end&&g.step===step;
+  }
+  function eventSum(){return rowsAre([EVENT_FIELD])&&oneValue(AMOUNT_FIELD,'sum');}
+  function amountCount(){return rowsAre([AMOUNT_FIELD])&&oneValue(ID_FIELD,'count');}
+  function paySum(){return rowsAre([PAYDATE_FIELD])&&oneValue(AMOUNT_FIELD,'sum');}
+  function yearCollapsed(field,year){const g=groupOf(field);return !!(g&&g.collapsed&&g.collapsed[String(year)]);}
+  function yearsIn(field){
+    const p=activePivot();if(!p)return [];const set=new Set();
+    recordsForPivot(p).forEach(r=>{const d=parseDateValue(r[field]);if(d)set.add(String(d.getFullYear()));});
+    return [...set];
+  }
+  function allYearsCollapsed(field){const years=yearsIn(field);return years.length>=2&&years.every(y=>yearCollapsed(field,y));}
+  function quarterPaths(field,year){
+    const p=activePivot();if(!p)return [];const set=new Set();
+    recordsForPivot(p).forEach(r=>{
+      const d=parseDateValue(r[field]);if(!d||String(d.getFullYear())!==String(year))return;
+      set.add(String(year)+'\u0001'+QUARTERS_RU[Math.floor(d.getMonth()/3)]);
+    });
+    return [...set];
+  }
+  function yearOpenToMonths(field,year){
+    if(yearCollapsed(field,year))return false;
+    const qs=quarterPaths(field,year);if(!qs.length)return false;
+    const g=groupOf(field);
+    return qs.every(k=>!(g.collapsed&&g.collapsed[k]));
+  }
+  const TARGET_FINAL='<p class="target-panel-note">После подтягивания допродаж общий итог сводной: <b>1&nbsp;522&nbsp;000</b> ₽ (появится договор <b>Д-2601</b>, регион <b>Москва</b>).</p>';
+  const MANAGER_BRIEF='<div class="manager-brief"><b>Письмо от руководителя:</b> «Коллеги, к завтрашней планёрке нужен живой отчёт по комиссиям: видно вклад продуктов по регионам, удобные фильтры для презентации и диаграмма. Реестр прислали “как есть” — приведите в порядок. Допродажи лежат в связанном файле — пусть подтягиваются при каждом открытии книги».</div>';
+  function registryRegionsFilled(){
+    const sh=sheets[0];
+    for(let r=DATA_ROW_START;r<=registryDataEnd;r++){
+      if(isRowDeleted(r))continue;
+      if(String(getCellComputed(sh,r,2)).trim()==='')return false;
+    }
+    return true;
+  }
+  function registrySourceReady(){
+    if(mergedRegions.length)return false;
+    if(!isRowDeleted(EMPTY_ROW))return false;
+    if(!productsNormalized())return false;
+    if(!registryCommissionsNumeric())return false;
+    if(!registryRegionsFilled())return false;
+    return true;
+  }
+  function productsNormalized(){
+    const sh=sheets[0];
+    for(let r=DATA_ROW_START;r<=registryDataEnd;r++){
+      if(isRowDeleted(r))continue;
+      const p=String(getCellComputed(sh,r,3)).trim();
+      if(p.toLowerCase()==='взр'&&p!=='ВЗР')return false;
+    }
+    return true;
+  }
+  function registryCommissionsNumeric(){
+    const sh=sheets[0];
+    for(let r=DATA_ROW_START;r<=registryDataEnd;r++){
+      if(isRowDeleted(r))continue;
+      const v=getCellComputed(sh,r,4);
+      if(typeof v!=='number'||!isFinite(v))return false;
+      if(sh.formats[cellKey(r,4)]!=='number')return false;
+    }
+    return true;
+  }
+  function managerReportReady(){
+    const p=activePivot();if(!p)return false;
+    if(!oneValue(COMMISSION_FIELD,'sum'))return false;
+    if(p.layout.filters.length>0)return false;
+    const pr=p.layout.rows.includes(PRODUCT_FIELD),pc=p.layout.columns.includes(PRODUCT_FIELD);
+    const rr=p.layout.rows.includes(REGION_FIELD),rc=p.layout.columns.includes(REGION_FIELD);
+    return (pr&&rc)||(rr&&pc);
+  }
+  function hasPivotColumnChart(){
+    const p=activePivot();
+    return !!(p&&p.chart&&p.chart.connected&&p.chart.type==='column');
+  }
+  function registryHasLinkedRow(){
+    const sh=sheets[0];
+    for(let r=DATA_ROW_START;r<=registryDataEnd;r++){
+      if(isRowDeleted(r))continue;
+      if(String(getRawCell(sh,r,0)).trim()==='Д-2601')return true;
+    }
+    return false;
+  }
+  const TASKS=[
+    {id:'brief_prep',text:MANAGER_BRIEF+'Приведите лист <b>«Реестр»</b> в порядок для сводной: уберите <b>объединения</b> (после отмены проверьте, что у каждого договора заполнен <b>регион</b>), удалите <b>пустую строку</b> внутри таблицы, исправьте <b>разное написание</b> продукта «ВЗР», замените текст в столбце «'+COMMISSION_FIELD+'» на числа (где написано <b>«девяносто пять тыщ»</b> — введите <b>95&nbsp;000</b>).',check(){return registrySourceReady();}},
+    {id:'smart_table',text:'Оформите реестр как <b>умную таблицу</b> (<b>Ctrl+T</b>) — так проще обновлять сводную после допродаж.',check(){return registrySourceReady()&&isSmartTable;}},
+    {id:'pivot_report',text:'Создайте сводную по реестру. Руководителю нужна <b>матрица комиссий</b>: с одной стороны продукты, с другой — регионы продаж, в ячейках — сумма «'+COMMISSION_FIELD+'». Верхний фильтр отчёта пока не используйте. Если правили реестр уже после создания сводной — нажмите <b>«Обновить»</b> на вкладке «Анализ сводной таблицы».',check(){return !!getPivotSheet()&&managerReportReady()&&grandTotalIs(GRAND_TOTAL_BASE);},target:{html:'<p class="target-panel-note">Жёлтый блок — эталон после шага 1 (без пустого столбца регионов). Общий итог: <b>1&nbsp;519&nbsp;000</b> ₽. Ваши числа должны совпасть.</p>',matrix:true}},
+    {id:'slicers',text:'На листе сводной добавьте <b>срезы</b> по «'+REGION_FIELD+'» и «'+PRODUCT_FIELD+'», чтобы на планёрке можно было быстро менять срез без копания в фильтрах.',check(){return managerReportReady()&&hasSlicer(REGION_FIELD)&&hasSlicer(PRODUCT_FIELD);}},
+    {id:'chart',text:'Постройте <b>столбчатую сводную диаграмму</b> по этой таблице (вкладка «Анализ сводной таблицы» → «Сводная диаграмма»). На срезах выберите <b>«Екатеринбург»</b> и <b>«Ипотечное страхование»</b> — диаграмма должна показывать только отфильтрованные данные.',check(){return managerReportReady()&&hasPivotColumnChart()&&slicerPick(REGION_FIELD,'Екатеринбург')&&slicerPick(PRODUCT_FIELD,'Ипотечное страхование')&&grandTotalIs(140000);},target:{html:'<p class="target-panel-note">При таких срезах общий итог: <b>140&nbsp;000</b> ₽.</p>'}},
+    {id:'refresh_open',text:'Бухгалтерия прислала допродажи в файле <b>Допродажи_декабрь.csv</b>. На вкладке <b>«Данные»</b> нажмите <b>«Открыть файл заново»</b> — как будто вы снова открыли книгу утром. Проверьте: в реестре появился договор <b>Д-2601</b>, в сводной общий итог — <b>1&nbsp;522&nbsp;000</b> ₽ (срезы на итог не влияют).',check(){return pendingRegistryApplied&&registryHasLinkedRow()&&managerReportReady()&&grandTotalIs(GRAND_TOTAL_AFTER_LINK,{ignoreSlicers:true,ignoreAxisFilters:true});},target:{html:TARGET_FINAL}}
+  ];
+  const COMPLETE='Поздравляем! Вы успешно освоили сводные таблицы: подготовили «грязные» данные, собрали отчёт под задачу руководителя, добавили срезы и сводную диаграмму и подтянули допродажи при повторном открытии книги.';
+  const ARTEM_HINTS=[
+    '«Главная» → меню «Объединить» → «Отменить объединение». Удали пустую строку (ПКМ по номеру строки). Ctrl+H: «взр» → «ВЗР». В ячейке «девяносто пять тыщ» (Д-2403) поставь 95000 и формат «Числовой» для столбца комиссий.',
+    'Выдели таблицу на «Реестр» → Ctrl+T → OK.',
+    '«Вставка» → «Сводная таблица». Разложи «'+PRODUCT_FIELD+'» и «'+REGION_FIELD+'» по строкам/столбцам, «'+COMMISSION_FIELD+'» — в «Значения», сумма. Итог 1 519 000 ₽.',
+    'На листе «Сводная1»: «Анализ сводной таблицы» → «Вставить срез» — отметь оба поля: регион и продукт.',
+    'Там же — «Сводная диаграмма». Потом на срезах выбери «Екатеринбург» и «Ипотечное страхование».',
+    '«Данные» → «Открыть файл заново». На «Реестре» должна появиться строка Д-2601; общий итог сводной — 1 522 000 ₽.'
+  ];
+
+  function isRowDeleted(r){return deletedRows.has(r);}
+  function isRowHidden(r){return hiddenRows.has(r);}
+  function closeContextMenu(){if(contextMenuEl){contextMenuEl.remove();contextMenuEl=null;}}
+  function deleteRows(rows){const unique=[...new Set(rows)].filter(r=>!isRowDeleted(r));if(!unique.length)return;pushUndo();unique.forEach(r=>deletedRows.add(r));closeContextMenu();clearSelRange();renderGrid();checkProgress();showToast('Удалено строк: '+unique.length+'.');}
+  function showRowContextMenu(e,rowIndex){e.preventDefault();closeContextMenu();closeFilterDropdown();if(cellEditorInput)commitValue(cellEditorInput.value);selectRow(rowIndex);const menu=document.createElement('div');menu.className='row-context-menu';const btn=document.createElement('button');btn.type='button';btn.textContent='Удалить';btn.addEventListener('click',()=>{const rows=[];if(selRange&&isFullRowSelected(rowIndex)){for(let r=selRange.r0;r<=selRange.r1;r++)rows.push(r);}else rows.push(rowIndex);deleteRows(rows);});menu.appendChild(btn);document.body.appendChild(menu);contextMenuEl=menu;menu.style.left=Math.min(e.clientX,window.innerWidth-menu.offsetWidth-8)+'px';menu.style.top=Math.min(e.clientY,window.innerHeight-menu.offsetHeight-8)+'px';setTimeout(()=>document.addEventListener('mousedown',outsideContextMenu,{once:true}),0);function outsideContextMenu(ev){if(menu.contains(ev.target))return;closeContextMenu();}}
+  function artemBlocksInput(){return window.ArtemAssistant&&ArtemAssistant.isOpen();}
+  function isModalOpen(){return document.querySelector('.modal-overlay.visible');}
+  function isExcelError(v){return EXCEL_ERRORS.includes(String(v));}
+
+  function serializeSheets(){
+    return sheets.map(sh=>({
+      name:sh.name,rows:sh.rows.map(row=>[...row]),formats:JSON.parse(JSON.stringify(sh.formats)),styles:JSON.parse(JSON.stringify(sh.styles||{})),
+      isPivot:!!sh.isPivot,
+      pivot:sh.isPivot?{sourceSheetIndex:sh.pivot.sourceSheetIndex,layout:JSON.parse(JSON.stringify(sh.pivot.layout)),filterSelections:Object.fromEntries(Object.entries(sh.pivot.filterSelections).map(([k,v])=>[k,[...v]])),axisFilters:Object.fromEntries(Object.entries(sh.pivot.axisFilters||{}).map(([k,v])=>[k,v.type==='labels'?{type:'labels',selected:[...v.selected]}:Object.assign({},v)])),slicers:(sh.pivot.slicers||[]).map(s=>({id:s.id,field:s.field,selected:s.selected?[...s.selected]:null,columns:s.columns||1,style:s.style||'light',connected:s.connected!==false})),timelines:(sh.pivot.timelines||[]).map(t=>({id:t.id,field:t.field,level:t.level||'years',years:t.years?[...t.years]:null,months:t.months?[...t.months]:null,quarters:t.quarters?[...t.quarters]:null,scroll:t.scroll||0,connected:t.connected!==false})),fieldListVisible:sh.pivot.fieldListVisible,cache:sh.pivot.cache?JSON.parse(JSON.stringify(sh.pivot.cache)):null,stale:!!sh.pivot.stale,groupings:JSON.parse(JSON.stringify(sh.pivot.groupings||{})),showExpandButtons:!!sh.pivot.showExpandButtons,chart:sh.pivot.chart?Object.assign({},sh.pivot.chart):null}:null
+    }));
+  }
+  function deserializeSheets(data){
+    sheets.length=0;
+    data.forEach(s=>{
+      const sh={name:s.name,rows:s.rows.map(row=>[...row]),formats:s.formats||{},styles:s.styles||{}};
+      if(s.isPivot&&s.pivot){
+        sh.isPivot=true;
+        sh.pivot={sourceSheetIndex:s.pivot.sourceSheetIndex,layout:s.pivot.layout,filterSelections:{},axisFilters:{},slicers:[],timelines:[],fieldListVisible:s.pivot.fieldListVisible!==false,cache:s.pivot.cache||null,stale:!!s.pivot.stale,groupings:s.pivot.groupings||{},showExpandButtons:!!s.pivot.showExpandButtons,chart:s.pivot.chart?Object.assign({},s.pivot.chart):null};
+        sh.pivot.layout.values=(sh.pivot.layout.values||[]).map((v,i)=>typeof v==='string'?{id:'vf_old_'+i,field:v,agg:'sum',showAs:'none',customName:'',numFmt:'general'}:v);
+        Object.entries(s.pivot.filterSelections||{}).forEach(([k,v])=>{sh.pivot.filterSelections[k]=new Set(v);});
+        Object.entries(s.pivot.axisFilters||{}).forEach(([k,v])=>{
+          if(v&&v.type==='labels')sh.pivot.axisFilters[k]={type:'labels',selected:new Set(v.selected||[])};
+          else if(v&&v.type==='value')sh.pivot.axisFilters[k]=Object.assign({},v);
+        });
+        (s.pivot.slicers||[]).forEach(sl=>{sh.pivot.slicers.push({id:sl.id,field:sl.field,selected:sl.selected?new Set(sl.selected):null,columns:sl.columns||1,style:sl.style||'light',connected:sl.connected!==false});});
+        (s.pivot.timelines||[]).forEach(tl=>{sh.pivot.timelines.push({id:tl.id,field:tl.field,level:tl.level||'years',years:tl.years?new Set(tl.years):null,months:tl.months?new Set(tl.months):null,quarters:tl.quarters?new Set(tl.quarters):null,scroll:tl.scroll||0,connected:tl.connected!==false});});
+      }
+      sheets.push(sh);
+    });
+  }
+  function snapshotState(){
+    return{sheets:serializeSheets(),activeSheetIndex,merged:JSON.parse(JSON.stringify(mergedRegions)),deleted:[...deletedRows],hidden:[...hiddenRows],filter:filterEnabled,filterCol:filterAppliedCol,filterVals:filterAppliedValues?[...filterAppliedValues]:null,smart:isSmartTable,fieldListTask:fieldListTaskArmed,registryDataEnd,pendingRegistryApplied,workbookConnections:Object.assign({},workbookConnections)};
+  }
+  function restoreState(s){
+    if(s.sheets)deserializeSheets(s.sheets);else if(s.rows){sheets.length=0;sheets.push({name:'Реестр',rows:s.rows.map(row=>[...row]),formats:s.formats||{},styles:s.styles||{}});}
+    activeSheetIndex=Math.max(0,Math.min(sheets.length-1,Number(s.activeSheetIndex)||0));
+    mergedRegions=s.merged||[];deletedRows=new Set(s.deleted||[]);hiddenRows=new Set(s.hidden||[]);
+    filterEnabled=!!s.filter;filterAppliedCol=s.filterCol;filterAppliedValues=s.filterVals?new Set(s.filterVals):null;
+    isSmartTable=!!s.smart;fieldListTaskArmed=!!s.fieldListTask;
+    registryDataEnd=Math.max(DATA_ROW_START,Number(s.registryDataEnd)||registryDataEnd);
+    pendingRegistryApplied=!!s.pendingRegistryApplied;
+    if(s.workbookConnections)workbookConnections.refreshOnOpen=!!s.workbookConnections.refreshOnOpen;
+    sheets.forEach(sh=>{sh.rows=sh.rows.slice(0,ROWS).map(row=>row.slice(0,COLS));});
+  }
+  function saveProgress(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({v:4,functionStep,state:snapshotState()}));}catch(e){}}
+  function scheduleSave(){clearTimeout(saveDebounce);saveDebounce=setTimeout(saveProgress,300);}
+  function loadProgress(){try{const raw=localStorage.getItem(SAVE_KEY);if(!raw)return false;const data=JSON.parse(raw);if(data.v!==4||!data.state)return false;restoreState(data.state);functionStep=Math.max(0,Math.min(TASKS.length,Number(data.functionStep)||0));restoredFromSave=true;return true;}catch(e){return false;}}
+  function pushUndo(){undoStack.push(snapshotState());if(undoStack.length>30)undoStack.shift();}
+  function undo(){if(!undoStack.length){showToast('Нечего отменять.');return;}restoreState(undoStack.pop());closeFilterDropdown();renderGrid();checkProgress();showToast('Последнее действие отменено (Ctrl+Z).');}
+  function isFormulaValue(v){return typeof v==='string'&&v.trim().charAt(0)==='=';}
+  function getRawCell(sh,r,c){return sh.rows[r]&&sh.rows[r][c]!==undefined?sh.rows[r][c]:'';}
+  function refToRC(ref){const m=String(ref).trim().toUpperCase().match(/^([A-Z]+)(\d+)$/);if(!m)return null;let col=0;for(let i=0;i<m[1].length;i++)col=col*26+(m[1].charCodeAt(i)-64);return{r:Number(m[2])-1,c:col-1};}
+  function rcToRef(r,c){return colLabel(c)+(r+1);}
+  function colIndexToLabel(n){let s='';while(n>0){n--;s=String.fromCharCode(65+n%26)+s;n=Math.floor(n/26);}return s;}
+  function parseRangeRef(s){const p=String(s).trim().toUpperCase().split(':');const a=refToRC(p[0]);if(!a)return null;if(p.length===1)return{r0:a.r,r1:a.r,c0:a.c,c1:a.c};const b=refToRC(p[1]);if(!b)return null;return{r0:Math.min(a.r,b.r),r1:Math.max(a.r,b.r),c0:Math.min(a.c,b.c),c1:Math.max(a.c,b.c)};}
+  function formulaUsesFn(raw,names){if(!isFormulaValue(raw))return false;const body=String(raw).trim().slice(1).toUpperCase();return names.some(n=>body.indexOf(n.toUpperCase()+'(')>=0);}
+  function splitArgs(str){const args=[];let depth=0,current='',inQuotes=false;for(let i=0;i<str.length;i++){const ch=str[i];if(ch==='"'){inQuotes=!inQuotes;current+=ch;continue;}if(!inQuotes&&ch==='('){depth++;current+=ch;continue;}if(!inQuotes&&ch===')'){depth--;current+=ch;continue;}if(!inQuotes&&ch===';'&&depth===0){args.push(current.trim());current='';continue;}current+=ch;}if(current.trim()||str.endsWith(';'))args.push(current.trim());return args;}
+  function splitByAmp(expr){const parts=[];let cur='',inQuotes=false;for(let i=0;i<expr.length;i++){const ch=expr[i];if(ch==='"'){inQuotes=!inQuotes;cur+=ch;continue;}if(ch==='&'&&!inQuotes){parts.push(cur.trim());cur='';continue;}cur+=ch;}if(cur.trim()||parts.length)parts.push(cur.trim());return parts.length?parts:[expr];}
+  function splitFunctionCall(body){const m=String(body).trim().match(/^([A-ZА-ЯЁ]+)\s*\((.*)\)$/i);if(!m)return null;return{name:m[1].toUpperCase(),args:splitArgs(m[2])};}
+  function parseDateValue(v){if(v instanceof Date&&!isNaN(v))return v;if(typeof v==='number'&&isFinite(v)&&v>0){const d=new Date(1899,11,30);d.setDate(d.getDate()+Math.floor(v));return d;}const s=String(v).trim();const m=s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);if(m)return new Date(Number(m[3]),Number(m[2])-1,Number(m[1]));return null;}
+  function formatDateRu(d){if(!(d instanceof Date)||isNaN(d))return'';return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+d.getFullYear();}
+  function dateToSerial(d){return Math.round((d-new Date(1899,11,30))/86400000);}
+  function coerceNumber(v){if(typeof v==='number'&&isFinite(v))return v;if(isExcelError(v))return NaN;const d=parseDateValue(v);if(d)return dateToSerial(d);const n=parseFloat(String(v).replace(/\s/g,'').replace(',','.'));return isNaN(n)?0:n;}
+  function isTruthy(v){if(isExcelError(v))return false;if(typeof v==='number')return v!==0;if(typeof v==='boolean')return v;const s=String(v).trim();return s!==''&&s!=='0'&&s.toLowerCase()!=='false';}
+  function matchCriteria(value,criteria){let c=String(criteria).trim();if(c.startsWith('"')&&c.endsWith('"'))c=c.slice(1,-1);const v=String(value);const vn=coerceNumber(value);if(c.startsWith('>='))return vn>=coerceNumber(c.slice(2));if(c.startsWith('<='))return vn<=coerceNumber(c.slice(2));if(c.startsWith('<>')||c.startsWith('!='))return v.toLowerCase()!==c.slice(2).replace(/^"/,'').replace(/"$/,'').toLowerCase();if(c.startsWith('>'))return vn>coerceNumber(c.slice(1));if(c.startsWith('<'))return vn<coerceNumber(c.slice(1));if(c.startsWith('='))return vn===coerceNumber(c.slice(1));return v.toLowerCase()===c.toLowerCase();}
+  function iterRangeCells(sh,rangeExpr,cb){const rng=parseRangeRef(rangeExpr);if(!rng)return;for(let r=rng.r0;r<=rng.r1;r++)for(let c=rng.c0;c<=rng.c1;c++)cb(r,c,getCellComputed(sh,r,c));}
+  function sumRangeArgs(sh,args,stack){let sum=0;args.forEach(arg=>{const t=String(arg).trim();const rng=parseRangeRef(t);if(rng){for(let r=rng.r0;r<=rng.r1;r++)for(let c=rng.c0;c<=rng.c1;c++){const v=getCellComputed(sh,r,c);if(typeof v==='number'&&isFinite(v))sum+=v;}}else{const v=evaluateSingleValue(sh,t,stack);if(typeof v==='number'&&isFinite(v))sum+=v;else sum+=coerceNumber(v);}});return sum;}
+  function evaluateFormula(sh,formula,stack){if(!stack)stack=new Set();const body=String(formula).trim().slice(1).trim();const call=splitFunctionCall(body);if(!call)return evaluateExpression(sh,body,stack);const fn=call.name,args=call.args;
+    if(fn==='TODAY'||fn==='СЕГОДНЯ')return dateToSerial(new Date());
+    if(fn==='YEAR'||fn==='ГОД'){const d=parseDateValue(evaluateSingleValue(sh,args[0],stack));return d?d.getFullYear():'#VALUE!';}
+    if(fn==='MONTH'||fn==='МЕСЯЦ'){const d=parseDateValue(evaluateSingleValue(sh,args[0],stack));return d?d.getMonth()+1:'#VALUE!';}
+    if(fn==='DAY'||fn==='ДЕНЬ'){const d=parseDateValue(evaluateSingleValue(sh,args[0],stack));return d?d.getDate():'#VALUE!';}
+    if(fn==='TRIM'||fn==='СЖПРОБЕЛЫ')return String(evaluateSingleValue(sh,args[0],stack)).trim().replace(/\s+/g,' ');
+    if(fn==='CONCATENATE'||fn==='СЦЕПИТЬ')return args.map(a=>String(evaluateSingleValue(sh,a,stack))).join('');
+    if(fn==='SUM'||fn==='СУММ')return sumRangeArgs(sh,args,stack);
+    if(fn==='IF'||fn==='ЕСЛИ')return isTruthy(evaluateSingleValue(sh,args[0],stack))?evaluateSingleValue(sh,args[1],stack):evaluateSingleValue(sh,args[2]||'""',stack);
+    if(fn==='AND'||fn==='И')return args.every(a=>isTruthy(evaluateSingleValue(sh,a,stack)));
+    if(fn==='OR'||fn==='ИЛИ')return args.some(a=>isTruthy(evaluateSingleValue(sh,a,stack)));
+    if(fn==='SUMIF'){let total=0;const rng=parseRangeRef(args[0]);if(!rng)return'#VALUE!';const crit=args[1];const sumRng=args[2]?parseRangeRef(args[2]):rng;let si=0;for(let r=rng.r0;r<=rng.r1;r++)for(let c=rng.c0;c<=rng.c1;c++){if(matchCriteria(getCellComputed(sh,r,c),crit)){const sr=sumRng.r0+(r-rng.r0),sc=sumRng.c0+(c-rng.c0);const v=getCellComputed(sh,sr,sc);if(typeof v==='number'&&isFinite(v))total+=v;else total+=coerceNumber(v);si++;}}return total;}
+    if(fn==='SUMIFS'){let total=0;const sumRng=parseRangeRef(args[0]);if(!sumRng)return'#VALUE!';for(let r=sumRng.r0;r<=sumRng.r1;r++)for(let c=sumRng.c0;c<=sumRng.c1;c++){let ok=true;for(let i=0;i+1<args.length;i+=2){const cr=parseRangeRef(args[i]);const crit=args[i+1];if(!cr){ok=false;break;}const rr=cr.r0+(r-sumRng.r0),cc=cr.c0+(c-sumRng.c0);if(!matchCriteria(getCellComputed(sh,rr,cc),crit)){ok=false;break;}}if(ok){const v=getCellComputed(sh,r,c);if(typeof v==='number'&&isFinite(v))total+=v;else total+=coerceNumber(v);}}return total;}
+    if(fn==='COUNTIF'){let cnt=0;const rng=parseRangeRef(args[0]);if(!rng)return'#VALUE!';for(let r=rng.r0;r<=rng.r1;r++)for(let c=rng.c0;c<=rng.c1;c++)if(matchCriteria(getCellComputed(sh,r,c),args[1]))cnt++;return cnt;}
+    if(fn==='COUNTIFS'){const rng=parseRangeRef(args[0]);if(!rng)return'#VALUE!';let cnt=0;for(let r=rng.r0;r<=rng.r1;r++)for(let c=rng.c0;c<=rng.c1;c++){let ok=true;for(let i=0;i+1<args.length;i+=2){const cr=parseRangeRef(args[i]);if(!cr||!matchCriteria(getCellComputed(sh,cr.r0+(r-rng.r0),cr.c0+(c-rng.c0)),args[i+1])){ok=false;break;}}if(ok)cnt++;}return cnt;}
+    return'#NAME?';}
+  function evaluateExpression(sh,expr,stack){const parts=splitByAmp(expr);if(parts.length>1)return parts.map(p=>String(evaluateSingleValue(sh,p,stack))).join('');return evaluateSingleValue(sh,expr,stack);}
+  function evaluateSingleValue(sh,expr,stack){const t=String(expr).trim();if(!t)return'';if(t.startsWith('"')&&t.endsWith('"'))return t.slice(1,-1);const ref=refToRC(t);if(ref){const key=cellKey(ref.r,ref.c);if(stack.has(key))return'#REF!';stack.add(key);const raw=getRawCell(sh,ref.r,ref.c);const res=isFormulaValue(raw)?evaluateFormula(sh,raw,stack):raw;stack.delete(key);return res;}const call=splitFunctionCall(t);if(call)return evaluateFormula(sh,'='+t,stack);const num=parseFloat(t.replace(/\s/g,'').replace(',','.'));if(!isNaN(num)&&/^[\d\s.,+-]+$/.test(t))return num;return t;}
+  function getCellComputed(sh,r,c){
+    const v=getRawCell(sh,r,c);
+    if(isFormulaValue(v)){
+      const body=String(v).slice(1);
+      const refMatch=body.match(/([A-Z]+)(\d+)/i);
+      if(refMatch){
+        const src=refToRC(refMatch[0]);
+        if(src){
+          const rowOff=r-src.r,colOff=c-src.c;
+          const adjusted=body.replace(/([A-Z]+)(\d+)/gi,(m,col,row)=>{
+            let nc=0;for(let i=0;i<col.length;i++)nc=nc*26+(col.charCodeAt(i)-64);
+            nc+=colOff;return colIndexToLabel(nc)+(Number(row)+rowOff);
+          });
+          return evaluateFormula(sh,'='+adjusted);
+        }
+      }
+      return evaluateFormula(sh,v);
+    }
+    return typeof v==='number'?v:String(v);
+  }
+  function isDateText(t){return/^\d{1,2}[./]\d{1,2}[./]\d{4}$/.test(String(t).trim());}
+  function normalizeInput(text){const raw=String(text),t=raw.trim();if(t.charAt(0)==='=')return t;if(raw.charAt(0)==="'")return raw.slice(1);if(t==='')return'';if(isDateText(t)){const d=parseDateValue(t);if(d)return formatDateRu(d);}const num=parseFloat(t.replace(/\s/g,'').replace(',','.'));if(!isNaN(num)&&/^[\s\d.,+-eE]+$/.test(t))return num;return t;}
+  function rawToFormulaString(sh,r,c){const v=getRawCell(sh,r,c);if(v==null||v==='')return'';if(isFormulaValue(v))return String(v);if(typeof v==='string'&&isDateText(v)){const d=parseDateValue(v);if(d)return formatDateRu(d);}if(sh.formats[cellKey(r,c)]==='date'){const d=parseDateValue(v);if(d)return formatDateRu(d);}return String(v);}
+  function cellValuesEqual(a,b){if(String(a)===String(b))return true;const da=typeof a==='string'&&isDateText(a)?parseDateValue(a):null;const db=isDateText(b)?parseDateValue(b):null;if(da&&db)return formatDateRu(da)===formatDateRu(db);return false;}
+  function formatValueByType(v,fmt){if(isExcelError(v))return String(v);if(fmt==='date'){const d=parseDateValue(v);if(d)return formatDateRu(d);}if(typeof v==='string'&&!isFormulaValue(v)&&isDateText(v)){const d=parseDateValue(v);if(d)return formatDateRu(d);}if(fmt==='number'&&typeof v==='number')return v.toLocaleString('ru-RU',{maximumFractionDigits:2,useGrouping:true});if(typeof v==='number'&&isFinite(v))return v.toLocaleString('ru-RU',{maximumFractionDigits:0,useGrouping:true});return String(v);}
+  function formatCellDisplay(sh,r,c){const v=getRawCell(sh,r,c);if(v===''||v==null)return'';const fmt=sh.formats[cellKey(r,c)]||'general';if(isFormulaValue(v))return formatValueByType(getCellComputed(sh,r,c),fmt);return formatValueByType(v,fmt);}
+  function getMergeAt(r,c){return mergedRegions.find(m=>r>=m.r&&r<m.r+m.rs&&c>=m.c&&c<m.c+m.cs)||null;}
+  function isHiddenByMerge(r,c){const m=getMergeAt(r,c);return m&&!(m.r===r&&m.c===c);}
+  function unmergeAll(){
+    if(!mergedRegions.length){showToast('Объединённых ячеек не найдено.');return;}
+    pushUndo();
+    mergedRegions.forEach(m=>{
+      if(m.backup&&m.backup.length){
+        m.backup.forEach(cell=>{sheet().rows[cell.r][cell.c]=cell.v;});
+      }else{
+        sheet().rows[m.r][m.c]=m.value;
+        for(let dr=0;dr<m.rs;dr++)for(let dc=0;dc<m.cs;dc++)if(dr||dc)sheet().rows[m.r+dr][m.c+dc]='';
+      }
+    });
+    mergedRegions=[];
+    const ps=getPivotSheet();if(ps)ps.pivot.stale=true;
+    renderGrid();checkProgress();
+    showToast('Объединение ячеек отменено.');
+  }
+  function getActiveRange(){return selRange?{r0:selRange.r0,r1:selRange.r1,c0:selRange.c0,c1:selRange.c1}:{r0:selR,r1:selR,c0:selC,c1:selC};}
+  function mergeRange(center){const range=getActiveRange();if(range.r0===range.r1&&range.c0===range.c1){showToast('Выделите несколько ячеек для объединения.');return;}pushUndo();const remove=mergedRegions.filter(m=>!(m.r+m.rs-1<range.r0||m.r>range.r1||m.c+m.cs-1<range.c0||m.c>range.c1));remove.forEach(m=>{sheet().rows[m.r][m.c]=m.value;for(let dr=0;dr<m.rs;dr++)for(let dc=0;dc<m.cs;dc++)if(dr||dc)sheet().rows[m.r+dr][m.c+dc]='';});mergedRegions=mergedRegions.filter(m=>!remove.includes(m));const value=getRawCell(sheet(),range.r0,range.c0);const backup=[];for(let r=range.r0;r<=range.r1;r++)for(let c=range.c0;c<=range.c1;c++)backup.push({r,c,v:getRawCell(sheet(),r,c)});mergedRegions.push({r:range.r0,c:range.c0,rs:range.r1-range.r0+1,cs:range.c1-range.c0+1,value,backup});for(let r=range.r0;r<=range.r1;r++)for(let c=range.c0;c<=range.c1;c++)if(r!==range.r0||c!==range.c0)sheet().rows[r][c]='';sheet().rows[range.r0][range.c0]=value;if(center){const k=cellKey(range.r0,range.c0);if(!sheet().styles[k])sheet().styles[k]={};sheet().styles[k].alignCenter=true;}renderGrid();checkProgress();showToast(center?'Ячейки объединены и выровнены по центру.':'Ячейки объединены.');}
+  function mergeAndCenter(){mergeRange(true);}
+  function mergeCellsOnly(){mergeRange(false);}
+  function selectBlankCells(){const blanks=[];const u=getUsedRange();for(let r=u.r0;r<=u.r1;r++){if(isRowDeleted(r))continue;for(let c=u.c0;c<=u.c1;c++){if(isHiddenByMerge(r,c))continue;if(String(getRawCell(sheet(),r,c)).trim()==='')blanks.push({r,c});}}if(!blanks.length){showToast('Пустых ячеек не найдено.');return;}const rs=blanks.map(b=>b.r),cs=blanks.map(b=>b.c);setSelection(Math.min(...rs),Math.min(...cs),Math.max(...rs),Math.max(...cs));selR=blanks[0].r;selC=blanks[0].c;renderGrid();showToast('Выделено пустых ячеек: '+blanks.length+'.');}
+  function closeRibbonMenu(){if(ribbonMenuEl){ribbonMenuEl.remove();ribbonMenuEl=null;}}
+  function showRibbonMenu(anchorEl,items){closeRibbonMenu();closeContextMenu();closeFilterDropdown();const menu=document.createElement('div');menu.className='ribbon-menu';items.forEach(item=>{if(item==='hr'){menu.appendChild(document.createElement('hr'));return;}const btn=document.createElement('button');btn.type='button';btn.textContent=item.label;btn.addEventListener('click',()=>{closeRibbonMenu();item.action();});menu.appendChild(btn);});document.body.appendChild(menu);ribbonMenuEl=menu;const rect=anchorEl.getBoundingClientRect();menu.style.top=(rect.bottom+2)+'px';menu.style.left=Math.min(rect.left,window.innerWidth-menu.offsetWidth-8)+'px';setTimeout(()=>document.addEventListener('mousedown',outsideRibbonMenu,{once:true}),0);function outsideRibbonMenu(e){if(menu.contains(e.target)||anchorEl.contains(e.target))return;closeRibbonMenu();}}
+  function getUsedRange(){let r1=0,c1=0,r0=ROWS-1,c0=COLS-1;for(let r=0;r<ROWS;r++)if(!isRowDeleted(r)&&!isRowHidden(r)){r0=Math.min(r0,r);r1=Math.max(r1,r);}for(let c=0;c<COLS;c++){for(let r=0;r<ROWS;r++){if(isRowDeleted(r)||isRowHidden(r))continue;if(String(getRawCell(sheet(),r,c)).trim()!==''){c0=Math.min(c0,c);c1=Math.max(c1,c);break;}}}return{r0,c0,r1,c1};}
+  function rangeRef(){const u=getUsedRange();return rcToRef(u.r0,u.c0)+':'+rcToRef(u.r1,u.c1);}
+  function clearSelRange(){selRange=null;}
+  function setSelection(r0,c0,r1,c1){selRange={r0:Math.min(r0,r1),c0:Math.min(c0,c1),r1:Math.max(r0,r1),c1:Math.max(c0,c1)};}
+  function isInSelection(r,c){if(!selRange)return r===selR&&c===selC;return r>=selRange.r0&&r<=selRange.r1&&c>=selRange.c0&&c<=selRange.c1;}
+  function selectCell(r,c,keepRange){if(cellEditorInput)commitValue(cellEditorInput.value);selR=r;selC=c;if(!keepRange)clearSelRange();renderGrid();}
+  function moveSelection(dr,dc){let nr=selR+dr,nc=selC+dc;while(nr>=0&&nr<ROWS&&(isRowDeleted(nr)||isRowHidden(nr)))nr+=dr;while(nc>=0&&nc<COLS&&isHiddenByMerge(nr,nc))nc+=dc;if(nr<0||nr>=ROWS||nc<0||nc>=COLS)return;if(isHiddenByMerge(nr,nc))return;selectCell(nr,nc);}
+  function selectAll(){const u=getUsedRange();setSelection(u.r0,u.c0,u.r1,u.c1);selR=u.r0;selC=u.c0;renderGrid();showToast('Выделен диапазон '+rangeRef()+' (Ctrl+A).');}
+  function selectRow(r){if(isRowDeleted(r)||isRowHidden(r))return;if(cellEditorInput)commitValue(cellEditorInput.value);setSelection(r,0,r,COLS-1);selR=r;selC=0;renderGrid();}
+  function selectColumn(c){if(cellEditorInput)commitValue(cellEditorInput.value);const u=getUsedRange();setSelection(u.r0,c,u.r1,c);selR=u.r0;selC=c;renderGrid();}
+  function isFullRowSelected(r){return selRange&&selRange.r0===selRange.r1&&selRange.r0===r&&selRange.c0===0&&selRange.c1===COLS-1;}
+  function isFullColSelected(c){if(!selRange||selRange.c0!==selRange.c1||selRange.c0!==c)return false;const u=getUsedRange();return selRange.r0===u.r0&&selRange.r1===u.r1;}
+  function goToHome(){selR=0;selC=0;clearSelRange();renderGrid();gridScroll.scrollTop=0;gridScroll.scrollLeft=0;showToast('Переход в начало таблицы (Ctrl+Home).');}
+  function closeFilterDropdown(){if(filterDropdownEl){filterDropdownEl.remove();filterDropdownEl=null;}}
+  function getUniqueColumnValues(col){const vals=new Set();for(let r=DATA_ROW_START;r<=registryDataEnd;r++){if(isRowDeleted(r))continue;const disp=formatCellDisplay(sheet(),r,col);const v=String(disp).trim();if(v||getRawCell(sheet(),r,col)!=='')vals.add(v||'(пусто)');}return[...vals].sort((a,b)=>a.localeCompare(b,'ru'));}
+  function applyColumnFilter(col,selected){pushUndo();filterAppliedCol=col;filterAppliedValues=new Set(selected);hiddenRows.clear();for(let r=DATA_ROW_START;r<=registryDataEnd;r++){if(isRowDeleted(r))continue;const disp=formatCellDisplay(sheet(),r,col);const v=String(disp).trim()||'(пусто)';if(!filterAppliedValues.has(v))hiddenRows.add(r);}renderGrid();checkProgress();}
+  function showFilterDropdown(col,evt){if(!filterEnabled)return;closeFilterDropdown();const vals=getUniqueColumnValues(col);const dd=document.createElement('div');dd.className='filter-dropdown';const selected=filterAppliedCol===col&&filterAppliedValues?new Set(filterAppliedValues):new Set(vals);const allLbl=document.createElement('label');const allCb=document.createElement('input');allCb.type='checkbox';allCb.checked=selected.size===vals.length;allLbl.appendChild(allCb);allLbl.appendChild(document.createTextNode(' (Выбрать все)'));dd.appendChild(allLbl);dd.appendChild(document.createElement('hr'));const cbs=[];vals.forEach(v=>{const lbl=document.createElement('label');const cb=document.createElement('input');cb.type='checkbox';cb.value=v;cb.checked=selected.has(v);lbl.appendChild(cb);lbl.appendChild(document.createTextNode(' '+v));dd.appendChild(lbl);cbs.push(cb);});allCb.addEventListener('change',()=>cbs.forEach(cb=>cb.checked=allCb.checked));const actions=document.createElement('div');actions.className='filter-actions';const ok=document.createElement('button');ok.textContent='OK';const cancel=document.createElement('button');cancel.textContent='Отмена';cancel.className='cancel-btn';actions.appendChild(cancel);actions.appendChild(ok);dd.appendChild(actions);document.body.appendChild(dd);filterDropdownEl=dd;const rect=evt.target.getBoundingClientRect();dd.style.top=(rect.bottom+2)+'px';dd.style.left=Math.min(rect.left,window.innerWidth-dd.offsetWidth-8)+'px';ok.addEventListener('click',()=>{const chosen=cbs.filter(cb=>cb.checked).map(cb=>cb.value);if(!chosen.length){showToast('Нужно выбрать хотя бы одно значение.');return;}applyColumnFilter(col,chosen);closeFilterDropdown();});cancel.addEventListener('click',closeFilterDropdown);setTimeout(()=>document.addEventListener('mousedown',outsideFilter,{once:true}),0);function outsideFilter(e){if(dd.contains(e.target)||e.target.classList.contains('filter-arrow'))return;closeFilterDropdown();}checkProgress();}
+  function renderGrid(){
+    if(isPivotSheet(sheet())){renderPivotGrid();renderSheetBar();scheduleSave();syncFormulaBar();return;}
+    pivotFieldsPanel.hidden=true;pivotFilterBar.hidden=true;grid.classList.remove('pivot-table');const staleBar=document.getElementById('pivotStaleBar');if(staleBar)staleBar.hidden=true;
+    grid.innerHTML='';if(isSmartTable)grid.classList.add('smart-table');else grid.classList.remove('smart-table');const sh=sheet();const cg=document.createElement('colgroup');const colRh=document.createElement('col');colRh.className='col-rowhead';cg.appendChild(colRh);for(let ci=0;ci<COLS;ci++){const col=document.createElement('col');col.className='col-data';cg.appendChild(col);}grid.appendChild(cg);const thead=document.createElement('thead'),hr=document.createElement('tr');const corner=document.createElement('th');corner.className='corner';hr.appendChild(corner);for(let c=0;c<COLS;c++){const th=document.createElement('th');th.className='col-header';th.dataset.c=c;th.textContent=colLabel(c);if(isFullColSelected(c))th.classList.add('header-selected');hr.appendChild(th);}thead.appendChild(hr);grid.appendChild(thead);const tbody=document.createElement('tbody');let displayRowNum=1;for(let r=0;r<ROWS;r++){if(isRowDeleted(r)||isRowHidden(r))continue;const tr=document.createElement('tr');const th=document.createElement('th');th.className='row-header';th.dataset.r=r;th.textContent=displayRowNum++;if(isFullRowSelected(r))th.classList.add('header-selected');tr.appendChild(th);for(let c=0;c<COLS;c++){if(isHiddenByMerge(r,c))continue;const td=document.createElement('td');td.dataset.r=r;td.dataset.c=c;const merge=getMergeAt(r,c);if(merge&&merge.r===r&&merge.c===c){if(merge.rs>1)td.rowSpan=merge.rs;if(merge.cs>1)td.colSpan=merge.cs;td.classList.add('merged-cell');}const display=formatCellDisplay(sh,r,c);td.textContent=display;if(isExcelError(display))td.classList.add('cell-error');const v=getRawCell(sh,r,c);const st=sh.styles[cellKey(r,c)]||{};if(st.alignCenter)td.style.textAlign='center';else if(r===0||c===0||c===2||c===3||c===5||(typeof v==='string'&&!isFormulaValue(v)&&!isDateText(String(v))&&isNaN(parseFloat(String(v).replace(/\s/g,'').replace(',','.')))))td.classList.add('text-left');if(st.bold)td.style.fontWeight='bold';if(st.italic)td.style.fontStyle='italic';if(st.underline)td.style.textDecoration='underline';if(isInSelection(r,c))td.classList.add('range-selected');if(editR===r&&editC===c)td.classList.add('editing-cell');else if(r===selR&&c===selC&&(!selRange||selRange.r0===selRange.r1&&selRange.c0===selRange.c1))td.classList.add('range-active');if(r>0&&((c===4&&valueIsText(v))||(c===1&&String(v).trim()!==''&&!parseDateValue(v)))){const ind=document.createElement('span');ind.className='error-indicator';ind.title=c===4?'Текст в числовом столбце':'В столбце даты есть текст';td.appendChild(ind);}if(r===0&&filterEnabled){const arrow=document.createElement('span');arrow.className='filter-arrow'+(filterAppliedCol===c?' active':'');arrow.textContent='▼';arrow.addEventListener('mousedown',e=>{e.preventDefault();e.stopPropagation();showFilterDropdown(c,e);});td.appendChild(arrow);}tr.appendChild(td);}tbody.appendChild(tr);}grid.appendChild(tbody);syncFormulaBar();renderSheetBar();scheduleSave();}
+  function renderSheetBar(){sheetBar.innerHTML='';sheets.forEach((s,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='sheet-tab'+(i===activeSheetIndex?' active':'');btn.textContent=s.name;btn.addEventListener('click',()=>switchToSheet(i));sheetBar.appendChild(btn);});}
+  function getSelectedCells(){if(selRange){const cells=[];for(let r=selRange.r0;r<=selRange.r1;r++)for(let c=selRange.c0;c<=selRange.c1;c++)cells.push({r,c});return cells;}return[{r:selR,c:selC}];}
+  function getSelectionFormat(){const cells=getSelectedCells();if(!cells.length)return'general';const fmts=cells.map(({r,c})=>sheet().formats[cellKey(r,c)]||'general');return fmts.every(f=>f===fmts[0])?fmts[0]:'general';}
+  function applyCellFormat(fmt){pushUndo();getSelectedCells().forEach(({r,c})=>{sheet().formats[cellKey(r,c)]=fmt;});if(fmt==='number'){getSelectedCells().forEach(({r,c})=>{if(r<DATA_ROW_START||r>registryDataEnd||isRowDeleted(r))return;const v=sheet().rows[r][c];if(typeof v==='string'&&!isFormulaValue(v)){const n=parseFloat(String(v).replace(/\s/g,'').replace(',','.'));if(!isNaN(n))sheet().rows[r][c]=n;}});}renderGrid();checkProgress();}
+  function syncRibbonControls(){const fmtEl=document.getElementById('fmtSelect');if(!fmtEl)return;syncingRibbon=true;fmtEl.value=getSelectionFormat();syncingRibbon=false;}
+  function syncFormulaBar(){nameBox.value=rcToRef(selR,selC);if(!cellEditorInput)formulaInput.value=rawToFormulaString(sheet(),selR,selC);syncRibbonControls();}
+  function commitValue(value,targetR,targetC){const r=targetR!==undefined?targetR:(editR!==null?editR:selR);const c=targetC!==undefined?targetC:(editC!==null?editC:selC);const prev=getRawCell(sheet(),r,c);const next=normalizeInput(value);if(cellValuesEqual(prev,next)){cellEditorInput=null;editR=editC=null;renderGrid();return;}pushUndo();sheet().rows[r][c]=next;if(!isPivotSheet(sheet())){const ps=getPivotSheet();if(ps)ps.pivot.stale=true;}cellEditorInput=null;editR=editC=null;renderGrid();checkProgress();}
+  function cancelEditor(){cellEditorInput=null;editR=editC=null;renderGrid();}
+  function startCellEditor(r,c,initial,replace){if(artemBlocksInput()||isModalOpen())return;if(cellEditorInput&&editR===r&&editC===c)return;if(cellEditorInput)commitValue(cellEditorInput.value);selR=r;selC=c;clearSelRange();editR=r;editC=c;renderGrid();const td=grid.querySelector('td[data-r="'+r+'"][data-c="'+c+'"]');if(!td)return;td.classList.add('editing-cell');const inp=document.createElement('input');inp.type='text';inp.className='cell-inline-input';const base=initial!==undefined?String(initial):rawToFormulaString(sheet(),r,c);inp.value=base;td.textContent='';td.appendChild(inp);cellEditorInput=inp;formulaInput.value=inp.value;inp.addEventListener('input',()=>{formulaInput.value=inp.value;});inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();commitValue(inp.value);}else if(e.key==='Escape'){e.preventDefault();cancelEditor();}});inp.addEventListener('blur',()=>{if(cellEditorInput===inp)commitValue(inp.value);});const focusInput=()=>{if(cellEditorInput!==inp||!document.body.contains(inp))return;inp.focus({preventScroll:true});if(replace||initial!==undefined){inp.setSelectionRange(inp.value.length,inp.value.length);}else{inp.select();}};requestAnimationFrame(()=>requestAnimationFrame(focusInput));setTimeout(focusInput,0);}
+  function toggleCellStyle(prop){pushUndo();const apply=(r,c)=>{const k=cellKey(r,c);if(!sheet().styles[k])sheet().styles[k]={};sheet().styles[k][prop]=!sheet().styles[k][prop];};if(selRange){for(let r=selRange.r0;r<=selRange.r1;r++)for(let c=selRange.c0;c<=selRange.c1;c++)apply(r,c);}else apply(selR,selC);renderGrid();}
+  function applyFmtSelect(val){applyCellFormat(val);const labels={general:'Общий',number:'Числовой',date:'Дата',text:'Текстовый'};showToast('Формат ячеек: '+(labels[val]||val)+'.');}
+  function insertFxFormula(formula){pushUndo();sheet().rows[selR][selC]=formula;renderGrid();checkProgress();}
+  function sortData(asc){const col=selC;pushUndo();const rows=[];for(let r=DATA_ROW_START;r<=registryDataEnd;r++)if(!isRowDeleted(r)&&!isRowHidden(r))rows.push(r);rows.sort((ra,rb)=>{let va=getCellComputed(sheet(),ra,col),vb=getCellComputed(sheet(),rb,col);const na=typeof va==='number',nb=typeof vb==='number';if(na&&nb)return asc?va-vb:vb-va;va=String(va).toLowerCase();vb=String(vb).toLowerCase();if(va<vb)return asc?-1:1;if(va>vb)return asc?1:-1;return 0;});const data=rows.map(r=>[...sheet().rows[r]]);const fmts=rows.map(r=>COLS.map(c=>sheet().formats[cellKey(r,c)]));const styles=rows.map(r=>COLS.map(c=>sheet().styles[cellKey(r,c)]));rows.forEach((r,i)=>{sheet().rows[r]=data[i];COLS.forEach((_,c)=>{const fk=cellKey(r,c);if(fmts[i][c])sheet().formats[fk]=fmts[i][c];else delete sheet().formats[fk];if(styles[i][c])sheet().styles[fk]=styles[i][c];else delete sheet().styles[fk];});});renderGrid();showToast(asc?'Сортировка A→Z по столбцу '+colLabel(col)+'.':'Сортировка Z→A по столбцу '+colLabel(col)+'.');}
+  function removeDuplicates(){pushUndo();const seen=new Set();let removed=0;for(let r=registryDataEnd;r>=DATA_ROW_START;r--){if(isRowDeleted(r))continue;const key=COLS.map(c=>String(getRawCell(sheet(),r,c))).join('|');if(seen.has(key)){deletedRows.add(r);removed++;}else seen.add(key);}renderGrid();checkProgress();showToast(removed?'Удалено дубликатов: '+removed+'.':'Дубликаты не найдены.');}
+
+  grid.addEventListener('contextmenu',e=>{if(artemBlocksInput()||isModalOpen())return;if(isPivotSheet(sheet())){const itemEl=e.target.closest&&e.target.closest('[data-pivot-item]');if(itemEl){const item=pivotItemFromEl(itemEl);if(!item)return;e.preventDefault();pivotSel={kind:'item',field:item.field,key:item.key};showGroupMenu(e.clientX,e.clientY,item.field,item.key,item.hasChildren);return;}const hdr=e.target.closest&&e.target.closest('[data-pivot-header]');if(hdr){e.preventDefault();showToast('Щёлкните по значению даты или числа внутри строк, а не по заголовку поля.');return;}const host=e.target.closest&&e.target.closest('[data-vf-id]');if(host){e.preventDefault();showValueMenu(e.clientX,e.clientY,host.dataset.vfId);return;}showPivotRefreshMenu(e);return;}const rowH=e.target.closest&&e.target.closest('tbody th.row-header');if(rowH){showRowContextMenu(e,Number(rowH.dataset.r));return;}closeContextMenu();});
+  grid.addEventListener('mousedown',e=>{if(artemBlocksInput()||isModalOpen())return;if(isPivotSheet(sheet())){const twist=e.target.closest&&e.target.closest('[data-twist]');if(twist){const item=pivotItemFromEl(twist);e.preventDefault();e.stopPropagation();if(item)toggleCollapse(item.field,item.key);return;}const itemEl=e.target.closest&&e.target.closest('[data-pivot-item]');if(itemEl){const item=pivotItemFromEl(itemEl);e.preventDefault();if(item){pivotSel={kind:'item',field:item.field,key:item.key};renderPivotUI();}return;}if(e.target.closest&&e.target.closest('[data-pivot-header]')){e.preventDefault();pivotSel={kind:'header'};showToast('Щёлкните по значению даты или числа внутри строк, а не по заголовку поля.');return;}e.preventDefault();return;}if(e.target.classList.contains('cell-inline-input'))return;closeContextMenu();closeRibbonMenu();const rowH=e.target.closest&&e.target.closest('tbody th.row-header');if(rowH){e.preventDefault();selectRow(Number(rowH.dataset.r));return;}const colH=e.target.closest&&e.target.closest('thead th.col-header');if(colH){e.preventDefault();selectColumn(Number(colH.dataset.c));return;}const td=e.target.closest&&e.target.closest('td');if(!td||e.target.classList.contains('filter-arrow'))return;e.preventDefault();const r=Number(td.dataset.r),c=Number(td.dataset.c);if(e.shiftKey&&selR!==null){setSelection(selR,selC,r,c);selR=r;selC=c;editR=editC=null;renderGrid();return;}startCellEditor(r,c);});
+  grid.addEventListener('dblclick',e=>{if(artemBlocksInput()||isModalOpen())return;if(isPivotSheet(sheet())){if(e.target.closest&&e.target.closest('[data-twist]'))return;const itemEl=e.target.closest&&e.target.closest('[data-pivot-item]');if(itemEl){const item=pivotItemFromEl(itemEl);const p=getActivePivot();if(item&&item.hasChildren&&p&&p.showExpandButtons)toggleCollapse(item.field,item.key);return;}const th=e.target.closest&&e.target.closest('th[data-vf-id]');if(th)openValueFieldSettings(th.dataset.vfId);return;}const td=e.target.closest&&e.target.closest('td');if(!td||e.target.classList.contains('filter-arrow'))return;e.preventDefault();startCellEditor(Number(td.dataset.r),Number(td.dataset.c));});
+  grid.addEventListener('touchstart',e=>{if(artemBlocksInput()||isModalOpen())return;const td=e.target.closest&&e.target.closest('td');if(!td||e.target.classList.contains('filter-arrow'))return;const r=Number(td.dataset.r),c=Number(td.dataset.c);const now=Date.now();if(lastTouchCell&&lastTouchCell.r===r&&lastTouchCell.c===c&&now-lastTouchTime<350){e.preventDefault();startCellEditor(r,c);lastTouchCell=null;return;}lastTouchCell={r,c};lastTouchTime=now;selectCell(r,c);},{passive:false});
+  formulaInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();commitValue(formulaInput.value);}});
+  formulaInput.addEventListener('input',()=>{if(cellEditorInput)cellEditorInput.value=formulaInput.value;});
+  gridScroll.addEventListener('keydown',e=>{if(artemBlocksInput()||isModalOpen())return;if(cellEditorInput)return;const mod=e.ctrlKey||e.metaKey;if(e.key==='F2'){e.preventDefault();startCellEditor(selR,selC);return;}if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();if(e.key==='ArrowUp')moveSelection(-1,0);if(e.key==='ArrowDown')moveSelection(1,0);if(e.key==='ArrowLeft')moveSelection(0,-1);if(e.key==='ArrowRight')moveSelection(0,1);return;}if(!mod&&e.key.length===1&&!e.altKey){e.preventDefault();startCellEditor(selR,selC,e.key,true);}});
+
+  function openModal(id){document.getElementById(id).classList.add('visible');}
+  function closeModal(id){document.getElementById(id).classList.remove('visible');}
+  function closeAllModals(){document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('visible'));gotoSpecialMode=false;}
+  const MODAL_IDS={goto:'modalGoTo',find:'modalFind',replace:'modalReplace',delete:'modalDelete',format:'modalFormat',table:'modalTable',pivot:'modalPivot',valueField:'modalValueField',group:'modalGroup',excelAlert:'modalExcelAlert',insertSlicer:'modalInsertSlicer',insertTimeline:'modalInsertTimeline',axisFilter:'modalAxisFilter',slicerSettings:'modalSlicerSettings',connections:'modalConnections'};
+  document.querySelectorAll('[data-close]').forEach(btn=>btn.addEventListener('click',()=>closeModal(MODAL_IDS[btn.dataset.close])));
+  function openGoTo(){gotoSpecialMode=false;document.getElementById('gotoSpecialPanel').hidden=true;document.getElementById('gotoRef').value=rcToRef(selR,selC);openModal('modalGoTo');}
+  document.getElementById('gotoSpecialBtn').addEventListener('click',()=>{document.getElementById('gotoSpecialPanel').hidden=false;gotoSpecialMode=true;});
+  document.getElementById('gotoOk').addEventListener('click',()=>{if(gotoSpecialMode&&document.querySelector('input[name="gotoSpecial"]:checked').value==='blanks'){const blanks=[];const u=getUsedRange();for(let r=u.r0;r<=u.r1;r++){if(isRowDeleted(r))continue;for(let c=u.c0;c<=u.c1;c++){if(isHiddenByMerge(r,c))continue;if(String(getRawCell(sheet(),r,c)).trim()==='')blanks.push({r,c});}}if(blanks.length){const rs=blanks.map(b=>b.r),cs=blanks.map(b=>b.c);setSelection(Math.min(...rs),Math.min(...cs),Math.max(...rs),Math.max(...cs));selR=blanks[0].r;selC=blanks[0].c;renderGrid();showToast('Выделено пустых ячеек: '+blanks.length+'. Теперь Ctrl + − для удаления.');}else showToast('Пустых ячеек не найдено.');}else{const ref=refToRC(document.getElementById('gotoRef').value.trim());if(ref){selR=ref.r;selC=ref.c;clearSelRange();renderGrid();}}closeModal('modalGoTo');});
+  function openFind(){document.getElementById('findText').value='';openModal('modalFind');}
+  document.getElementById('findNext').addEventListener('click',()=>{const q=document.getElementById('findText').value;if(!q){showToast('Введите текст для поиска.');return;}const u=getUsedRange();for(let r=u.r0;r<=u.r1;r++)for(let c=u.c0;c<=u.c1;c++){if(isRowDeleted(r)||isRowHidden(r))continue;if(String(getRawCell(sheet(),r,c)).toLowerCase().includes(q.toLowerCase())){selR=r;selC=c;clearSelRange();renderGrid();closeModal('modalFind');showToast('Найдено в '+rcToRef(r,c));return;}}showToast('Совпадений не найдено.');});
+  function openFindReplace(){document.getElementById('replaceFind').value='';document.getElementById('replaceWith').value='';openModal('modalReplace');setTimeout(()=>document.getElementById('replaceFind').focus(),0);}
+  document.getElementById('replaceAll').addEventListener('click',()=>{const find=document.getElementById('replaceFind').value;const repl=document.getElementById('replaceWith').value;if(!find){showToast('Укажите, что искать.');return;}pushUndo();let count=0;const u=getUsedRange();for(let r=u.r0;r<=u.r1;r++){if(isRowDeleted(r))continue;for(let c=u.c0;c<=u.c1;c++){const raw=getRawCell(sheet(),r,c);if(typeof raw==='string'&&!isFormulaValue(raw)){const re=new RegExp(find.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');if(re.test(raw)){sheet().rows[r][c]=raw.replace(re,repl);count++;}}}}closeModal('modalReplace');renderGrid();checkProgress();showToast('Заменено ячеек: '+count+'.');});
+  function openDeleteCells(){openModal('modalDelete');}
+  document.getElementById('deleteOk').addEventListener('click',()=>{const mode=document.querySelector('input[name="deleteMode"]:checked').value;pushUndo();if(mode==='row'&&selRange){const rowsToDelete=new Set();for(let r=selRange.r0;r<=selRange.r1;r++){let empty=true;for(let c=0;c<COLS;c++){if(String(getRawCell(sheet(),r,c)).trim()!==''){empty=false;break;}}if(empty||r===EMPTY_ROW)rowsToDelete.add(r);}if(!rowsToDelete.size)for(let r=selRange.r0;r<=selRange.r1;r++)rowsToDelete.add(r);rowsToDelete.forEach(r=>deletedRows.add(r));showToast('Удалено строк: '+rowsToDelete.size+'.');}else if(selRange){for(let r=selRange.r0;r<=selRange.r1;r++){if(isRowDeleted(r))continue;for(let c=selRange.c0;c<=selRange.c1;c++){if(String(getRawCell(sheet(),r,c)).trim()===''){deletedRows.add(r);break;}}}showToast('Пустые строки удалены.');}closeModal('modalDelete');clearSelRange();renderGrid();checkProgress();});
+  function openFormatCells(){document.getElementById('formatSelect').value=getSelectionFormat();openModal('modalFormat');}
+  document.getElementById('formatOk').addEventListener('click',()=>{const fmt=document.getElementById('formatSelect').value;applyCellFormat(fmt);closeModal('modalFormat');showToast('Формат применён (Ctrl+1).');});
+  function openCreateTable(){document.getElementById('tableRange').value=rangeRef();openModal('modalTable');}
+  document.getElementById('tableOk').addEventListener('click',()=>{if(!document.getElementById('tableHeaders').checked){showToast('Для сводной таблицы нужны заголовки!');return;}pushUndo();isSmartTable=true;closeModal('modalTable');renderGrid();checkProgress();showToast('Диапазон превращён в Умную таблицу (Ctrl+T)! 🦓✨');});
+  document.getElementById('pivotOk').addEventListener('click',()=>{closeModal('modalPivot');createPivotTable();});
+  document.getElementById('groupOk').addEventListener('click',applyGroupDialog);
+  document.getElementById('excelAlertOk').addEventListener('click',()=>closeModal('modalExcelAlert'));
+  document.getElementById('vfOk').addEventListener('click',applyValueFieldSettings);
+  document.getElementById('insertSlicerOk').addEventListener('click',applyInsertSlicerModal);
+  document.getElementById('insertTimelineOk').addEventListener('click',applyInsertTimelineModal);
+  document.getElementById('axisFilterOk').addEventListener('click',applyAxisFilterModal);
+  document.getElementById('axisFilterClear').addEventListener('click',clearAxisFilterModal);
+  document.getElementById('slicerSettingsOk').addEventListener('click',applySlicerSettingsModal);
+  document.getElementById('connectionsOk').addEventListener('click',applyConnectionsModal);
+  function toggleFilter(){filterEnabled=!filterEnabled;if(!filterEnabled){hiddenRows.clear();filterAppliedCol=null;filterAppliedValues=null;}renderGrid();checkProgress();if(ribbonTabs.querySelector('[data-tab="data"]').classList.contains('active'))switchRibbonTab('data');showToast(filterEnabled?'Фильтр включён (Ctrl+Shift+L). Кликните ▼ в заголовке.':'Фильтр отключён.');}
+  function fillSelection(){if(!selRange)return;const srcRaw=getRawCell(sheet(),selRange.r0,selRange.c0);if(!isFormulaValue(srcRaw)){showToast('Ctrl+Enter: выделите ячейки с формулой в первой строке диапазона.');return;}pushUndo();for(let r=selRange.r0;r<=selRange.r1;r++)for(let c=selRange.c0;c<=selRange.c1;c++){if(r===selRange.r0&&c===selRange.c0)continue;const body=String(srcRaw).slice(1);const adjusted=body.replace(/([A-Z]+)(\d+)/gi,(m,col,row)=>{const srcRef=refToRC(col+row);if(!srcRef)return m;const dr=r-srcRef.r,dc=c-srcRef.c;let nc=0;for(let i=0;i<col.length;i++)nc=nc*26+(col.charCodeAt(i)-64);nc+=dc;return colIndexToLabel(nc)+(Number(row)+dr);});sheet().rows[r][c]='='+adjusted;}renderGrid();checkProgress();showToast('Формула заполнена во все выделенные ячейки (Ctrl+Enter).');}
+  function handleShortcutKey(e){if(artemBlocksInput())return;if(cellEditorInput&&!(e.ctrlKey||e.metaKey)&&e.key!=='Escape')return;if(isModalOpen()&&e.key!=='Escape')return;if(e.key==='Escape'){closeAllModals();closeFilterDropdown();closeContextMenu();closeRibbonMenu();return;}const k=e.key.toLowerCase();if(e.ctrlKey&&!e.metaKey&&!e.altKey&&k==='h'){e.preventDefault();e.stopPropagation();openFindReplace();return;}if(e.ctrlKey&&!e.metaKey&&!e.altKey&&k==='f'){e.preventDefault();e.stopPropagation();openFind();return;}if(e.key==='F5'&&e.altKey){e.preventDefault();if(e.ctrlKey||e.metaKey)refreshAllPivots();else if(getActivePivot())refreshActivePivot(true);else showToast('Alt+F5 обновляет сводную на её листе. С листа реестра используйте Ctrl+Alt+F5.');return;}const mod=e.ctrlKey||e.metaKey;if(!mod)return;if(k==='home'){e.preventDefault();goToHome();return;}if(k==='a'){e.preventDefault();selectAll();return;}if(k==='g'){e.preventDefault();openGoTo();return;}if(e.key==='F5'){e.preventDefault();openGoTo();return;}if(k==='t'){e.preventDefault();openCreateTable();return;}if(k==='1'){e.preventDefault();openFormatCells();return;}if(k==='z'){e.preventDefault();undo();return;}if(k==='-'||k==='_'){e.preventDefault();openDeleteCells();return;}if(k==='enter'){e.preventDefault();fillSelection();return;}if(e.shiftKey&&k==='l'){e.preventDefault();toggleFilter();return;}}
+  document.addEventListener('keydown',handleShortcutKey,true);
+
+  const MERGE_ICON='<svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="5" width="14" height="10" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M10 5v10M3 10h14" stroke="currentColor" stroke-width="1.2"/></svg>';
+  const FIND_ICON='<svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M12.5 12.5L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  const RIBBON_HOME='<div class="ribbon-group"><div class="ribbon-row"><div class="split-btn"><button type="button" class="split-btn-main" id="btnFindMain">'+FIND_ICON+' Найти и выделить</button><button type="button" class="split-btn-menu" id="splitFindMenu" aria-label="Меню поиска">▾</button></div></div><span class="g-label">Редактирование</span></div><div class="ribbon-group"><div class="ribbon-row"><div class="split-btn"><button type="button" class="split-btn-main split-btn-multiline" id="btnMergeCenter"><span class="split-btn-icon">'+MERGE_ICON+'</span><span class="split-btn-text">Объединить и поместить<br>в центре</span></button><button type="button" class="split-btn-menu" id="splitMergeMenu" aria-label="Меню объединения">▾</button></div></div><span class="g-label">Выравнивание</span></div><div class="ribbon-group"><div class="ribbon-row"><button type="button" class="rb" id="btnBold" title="Жирный"><b>Ж</b></button><button type="button" class="rb" id="btnItalic" title="Курсив"><i>К</i></button><button type="button" class="rb" id="btnUnderline" title="Подчёркнутый"><u>Ч</u></button></div><span class="g-label">Шрифт</span></div><div class="ribbon-group"><div class="ribbon-row"><select id="fmtSelect" class="fmt-select" title="Числовой формат"><option value="general">Общий</option><option value="number">Числовой</option><option value="date">Дата</option><option value="text">Текстовый</option></select><button type="button" class="rb fmt-btn" id="btnFmtNumber" title="Числовой формат">.00</button><button type="button" class="rb" id="btnFormatCells" title="Формат ячеек (Ctrl+1)">⧉</button><button type="button" class="rb" id="btnFxSum">Σ Сумма</button><button type="button" class="rb" id="btnFxAvg">x̄ Среднее</button></div><span class="g-label">Число</span></div>';
+  function ribbonDataHtml(){return'<div class="ribbon-group"><div class="ribbon-row"><button type="button" class="rb" id="btnSortAZ">A→Z</button><button type="button" class="rb" id="btnSortZA">Z→A</button><button type="button" class="rb'+(filterEnabled?' active-toggle':'')+'" id="btnFilter">⏷ Фильтр</button><button type="button" class="rb" id="btnRemoveDup">⊘ Удалить дубликаты</button></div><span class="g-label">Сортировка и фильтр</span></div><div class="ribbon-group"><div class="ribbon-row"><button type="button" class="rb primary" id="btnConnections">Подключения к книге</button><button type="button" class="rb" id="btnReopenWorkbook">Открыть файл заново</button></div><span class="g-label">Подключения</span></div>';}
+  const RIBBON_FORMULAS='<div class="ribbon-group"><div class="ribbon-row"><button type="button" class="rb" id="btnAutoSum">Автосумма</button><button type="button" class="rb" id="btnInsertFn">Вставить функцию</button></div><span class="g-label">Библиотека функций</span></div>';
+  const RIBBON_INSERT='<div class="ribbon-group"><div class="ribbon-row"><button type="button" class="rb primary" id="btnPivotTable">Сводная таблица</button><button type="button" class="rb" id="btnCreateTable">Таблица</button></div><span class="g-label">Таблицы</span></div>';
+  function ribbonPivotHtml(){const p=getActivePivot();const on=p&&p.showExpandButtons;return '<div class="ribbon-group"><div class="ribbon-row"><button type="button" class="rb primary" id="btnFieldList">Список полей</button><button type="button" class="rb primary" id="btnInsertSlicer">Вставить срез</button><button type="button" class="rb primary" id="btnInsertPivotChart">Сводная диаграмма</button><button type="button" class="rb primary" id="btnInsertTimeline">Временная шкала</button><button type="button" class="rb" id="btnPivotRefresh">Обновить</button></div><span class="g-label">Фильтр</span></div><div class="ribbon-group"><div class="ribbon-row"><button type="button" class="rb" id="btnGroup">Группировать</button><button type="button" class="rb" id="btnUngroup">Разгруппировать</button><button type="button" class="rb'+(on?' active-toggle':'')+'" id="btnExpandToggle">Кнопки +/−</button></div><span class="g-label">Данные</span></div>';}
+  function ribbonSlicerToolsHtml(){
+    return '<div class="ribbon-group"><div class="ribbon-row">'+
+      '<button type="button" class="slicer-style-swatch" data-slicer-style="light" title="'+SLICER_STYLES.light+'"></button>'+
+      '<button type="button" class="slicer-style-swatch style-dark" data-slicer-style="dark" title="'+SLICER_STYLES.dark+'"></button>'+
+      '<button type="button" class="slicer-style-swatch style-green" data-slicer-style="green" title="'+SLICER_STYLES.green+'"></button>'+
+      '</div><span class="g-label">Стили срезов</span></div>'+
+      '<div class="ribbon-group"><div class="ribbon-row"><select id="slicerToolsCols" class="ui-select">'+
+      '<option value="1">1 столбец</option><option value="2">2 столбца</option><option value="3">3 столбца</option><option value="4">4 столбца</option>'+
+      '</select></div><span class="g-label">Кнопки среза</span></div>';
+  }
+  const RIBBON_PLACEHOLDER='<div class="ribbon-group"><span class="g-label" style="color:#999">В этом упражнении вкладка не используется</span></div>';
+
+  function bindInsertRibbon(){document.getElementById('btnPivotTable').addEventListener('click',openCreatePivot);document.getElementById('btnCreateTable').addEventListener('click',openCreateTable);}
+  function bindPivotRibbon(){document.getElementById('btnFieldList').addEventListener('click',togglePivotFieldList);document.getElementById('btnInsertSlicer').addEventListener('click',openInsertSlicerModal);document.getElementById('btnInsertPivotChart').addEventListener('click',insertPivotChart);document.getElementById('btnInsertTimeline').addEventListener('click',openInsertTimelineModal);document.getElementById('btnPivotRefresh').addEventListener('click',()=>refreshActivePivot(true));document.getElementById('btnGroup').addEventListener('click',openGroupForSelection);document.getElementById('btnUngroup').addEventListener('click',()=>ungroupField());document.getElementById('btnExpandToggle').addEventListener('click',toggleExpandButtons);}
+  function bindSlicerToolsRibbon(){
+    document.querySelectorAll('[data-slicer-style]').forEach(btn=>{
+      btn.addEventListener('click',()=>applySlicerStyle(btn.dataset.slicerStyle,REGION_FIELD));
+    });
+    const colSel=document.getElementById('slicerToolsCols');
+    const p=getActivePivot();
+    const sl=p&&p.slicers.find(s=>s.field===REGION_FIELD);
+    if(colSel&&sl)colSel.value=String(sl.columns||1);
+    if(colSel)colSel.addEventListener('change',()=>{
+      const pv=getActivePivot();if(!pv)return;
+      const s=pv.slicers.find(x=>x.field===REGION_FIELD)||pv.slicers[0];
+      if(!s)return;
+      s.columns=Math.max(1,Math.min(4,Number(colSel.value)||1));
+      renderPivotUI();checkProgress();
+    });
+  }
+  function bindHomeRibbon(){document.getElementById('btnFindMain').addEventListener('click',openFind);document.getElementById('splitFindMenu').addEventListener('click',e=>{e.stopPropagation();showRibbonMenu(e.currentTarget,[{label:'Найти…',action:openFind},{label:'Заменить…',action:openFindReplace},{label:'Перейти…',action:openGoTo},'hr',{label:'Выделить пустые ячейки',action:selectBlankCells}]);});document.getElementById('btnMergeCenter').addEventListener('click',mergeAndCenter);document.getElementById('splitMergeMenu').addEventListener('click',e=>{e.stopPropagation();showRibbonMenu(e.currentTarget,[{label:'Объединить и поместить в центре',action:mergeAndCenter},{label:'Объединить ячейки',action:mergeCellsOnly},'hr',{label:'Отменить объединение ячеек',action:unmergeAll}]);});document.getElementById('btnBold').addEventListener('click',()=>toggleCellStyle('bold'));document.getElementById('btnItalic').addEventListener('click',()=>toggleCellStyle('italic'));document.getElementById('btnUnderline').addEventListener('click',()=>toggleCellStyle('underline'));document.getElementById('fmtSelect').addEventListener('change',e=>{if(syncingRibbon)return;applyFmtSelect(e.target.value);});document.getElementById('btnFmtNumber').addEventListener('click',()=>applyFmtSelect('number'));document.getElementById('btnFormatCells').addEventListener('click',openFormatCells);syncRibbonControls();document.getElementById('btnFxSum').addEventListener('click',()=>{const u=selRange||{r0:selR,r1:selR,c0:selC,c1:selC};insertFxFormula('=SUM('+rcToRef(u.r0,u.c0)+':'+rcToRef(u.r1,u.c0)+')');});document.getElementById('btnFxAvg').addEventListener('click',()=>{const u=selRange||{r0:selR,r1:selR,c0:selC,c1:selC};insertFxFormula('=SUM('+rcToRef(u.r0,u.c0)+':'+rcToRef(u.r1,u.c0)+')/'+(u.r1-u.r0+1));});}
+  function bindDataRibbon(){
+    document.getElementById('btnSortAZ').addEventListener('click',()=>sortData(true));
+    document.getElementById('btnSortZA').addEventListener('click',()=>sortData(false));
+    document.getElementById('btnFilter').addEventListener('click',toggleFilter);
+    document.getElementById('btnRemoveDup').addEventListener('click',removeDuplicates);
+    document.getElementById('btnConnections').addEventListener('click',openConnectionsModal);
+    document.getElementById('btnReopenWorkbook').addEventListener('click',simulateWorkbookOpen);
+  }
+  function bindFormulasRibbon(){document.getElementById('btnAutoSum').addEventListener('click',()=>{const u=selRange||{r0:DATA_ROW_START,r1:registryDataEnd,c0:selC,c1:selC};insertFxFormula('=SUM('+rcToRef(u.r0,u.c0)+':'+rcToRef(u.r1,u.c1)+')');});document.getElementById('btnInsertFn').addEventListener('click',()=>startCellEditor(selR,selC,'=',true));}
+
+  function switchRibbonTab(tab){ribbonTabs.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));if(tab==='home'){ribbonPanel.innerHTML=RIBBON_HOME;bindHomeRibbon();}else if(tab==='insert'){ribbonPanel.innerHTML=RIBBON_INSERT;bindInsertRibbon();}else if(tab==='data'){ribbonPanel.innerHTML=ribbonDataHtml();bindDataRibbon();}else if(tab==='formulas'){ribbonPanel.innerHTML=RIBBON_FORMULAS;bindFormulasRibbon();}else if(tab==='pivot'){ribbonPanel.innerHTML=ribbonPivotHtml();bindPivotRibbon();}else if(tab==='slicertools'){ribbonPanel.innerHTML=ribbonSlicerToolsHtml();bindSlicerToolsRibbon();}else{ribbonPanel.innerHTML=RIBBON_PLACEHOLDER;}}
+  ribbonTabs.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.tab==='pivot')goToPivotAnalysisTab();else switchRibbonTab(b.dataset.tab);}));
+  document.getElementById('btnUndo').addEventListener('click',undo);
+  function showToast(msg){toast.textContent=msg;toast.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('visible'),3600);}
+  function updateTaskBanner(){
+    taskBanner.classList.remove('success');
+    if(functionStep>=TASKS.length){taskText.textContent=COMPLETE;taskBanner.classList.add('success');targetPanel.hidden=true;if(window.ArtemAssistant)ArtemAssistant.setTaskIndex(functionStep);return;}
+    const t=TASKS[functionStep];
+    taskText.innerHTML=t.text;
+    renderTargetPanel();
+    if(window.ArtemAssistant)ArtemAssistant.setTaskIndex(functionStep);
+  }
+  function checkProgress(){const before=functionStep;let guard=0;while(functionStep<TASKS.length&&TASKS[functionStep].check()&&guard++<TASKS.length)functionStep++;if(functionStep===before)return;updateTaskBanner();scheduleSave();if(functionStep>=TASKS.length){if(window.ArtemAssistant)ArtemAssistant.showCompletion();}else showToast('Задание выполнено — переходите к следующему.');}
+
+  for(let r=DATA_ROW_START;r<=registryDataEnd;r++){sheet().formats[cellKey(r,1)]='date';sheet().formats[cellKey(r,4)]='number';}
+  loadProgress();
+  bindPivotDropZones();
+  syncContextualRibbonTabs();
+  switchRibbonTab('home');updateTaskBanner();renderGrid();updateRibbonForSheet();
+  ArtemAssistant.init({idleImage:'artem.png',waveGif:'hello.gif',talkGif:'talk.gif',thumbsUpImage:'artem-thumbs_up.png',name:'Артём',intro:['Финальная работа: как в офисе — письмо от руководителя, «грязный» реестр и дедлайн на планёрку. Закрепим всё, что проходили в курсе!'],skipIntro:restoredFromSave,completion:{text:'Поздравляю с успешным освоением сводных таблиц! Ты умеешь готовить данные, строить отчёты под бизнес-задачу, работать со срезами и сводными диаграммами и настраивать обновление при открытии файла.',returnUrl:'https://lms.reso.ru/',returnLabel:'Вернуться к обучению'},getHint:i=>ARTEM_HINTS[i]||'Все задания выполнены! Обнови страницу, чтобы пройти ещё раз.',onIntroComplete:()=>{gridScroll.focus();if(functionStep>=TASKS.length&&window.ArtemAssistant)ArtemAssistant.showCompletion();}});
+  window.addEventListener('beforeunload',saveProgress);
+})();
+</script>
+</body></html>
